@@ -11,9 +11,20 @@ namespace BlogBravo
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            // CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            {
+                await host.InitAsync();
+                await host.RunAsync();
+            }
+            else
+            {
+                await host.RunAsync();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
