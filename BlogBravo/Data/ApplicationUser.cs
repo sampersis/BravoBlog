@@ -20,7 +20,7 @@ namespace BlogBravo.Data
         [DisplayName("Last Name")]
         public string LastName { get; set; }
 
-        public ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
 
         public ICollection<Blog> Blogs { get; set; }
     }
