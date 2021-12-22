@@ -1,0 +1,68 @@
+﻿@model BlogBravo.Models.Post
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1 class="alert-dark font-monospace border border-dark rounded mb-5">Create Post - <span class="text-muted fst-italic">Blog Name</span></h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create" id="post-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" >
+                <label asp-for="Title" class="control-label fw-bolder h4 mr-5"></label>
+                <input asp-for="Title" class="form-control border-dark" maxlength="50" id="post-title" onkeyup="(function () {document.querySelector('#post-title-count').innerText = 'Count (max. 50): ' + document.querySelector('#post-title').value.length; return false; })(); return false;"/>
+                <span class="alert-dark text-danger float-right" id="post-title-count" style="font-size:0.75rem;">Count (max. 50): 0</span>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Body" class="control-label fw-bold h4"></label>
+                <textarea asp-for="Body" class="form-control border-dark font-monospace" rows="10" id="post-body" onkeyup="(function () {document.querySelector('#post-body-count').innerText = 'Count: ' + document.querySelector('#post-body').value.length; return false; })(); return false;"></textarea>
+                <span class="alert-dark text-danger float-right" id="post-body-count" style="font-size:0.75rem;">Count : 0</span>
+                <span asp-validation-for="Body" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tag" class="control-label fw-bold h4"></label>
+                <div class="input-group mb-5">
+                    <input asp-for="Tag" class="form-control border-dark rounded mr-4" />
+                    <span asp-validation-for="Tag" class="text-danger"></span>
+                    <div class="input-group-append">
+                        <input type="button" value="Create Tag" class="btn btn-outline-dark rounded" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="Created" class="control-label"></label>
+                <input asp-for="Created" class="form-control" />
+                <span asp-validation-for="Created" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="Views" class="control-label"></label>
+                <input asp-for="Views" class="form-control" />
+                <span asp-validation-for="Views" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="BlogId" class="control-label"></label>
+                <select asp-for="BlogId" class="form-control" asp-items="ViewBag.BlogId"></select>
+            </div>
+            <div class="form-group">
+                @*<input type="submit" value="Create" class="btn btn-outline-dark" onclick="JavaScript:(function() {console.log('function postDateTime' + new Date()); $('#post-creation-datetime-input').val(new Date()); });(); return false;" />*@
+                @*<input type="submit" value="Create" class="btn btn-outline-dark" onclick="(function () { alert(new Date()); document.querySelector('#post-creation-datetime-input').setAttribute('value', new Date()); alert(document.querySelector('#post-creation-datetime-input').getAttribute('value')); return false; })(); submit();" />*@
+                <input type="submit" value="Save Post" class="btn btn-outline-dark mr-10" />
+                <input type="button" value="Cancel" class="btn btn-outline-dark float-md-right" />
+            </div>
+</form>
+    </div>
+</div>
+<script>
+    window.onload = function () { document.querySelector("#post-form").reset() };
+</script>
+
+@*<div>
+    <a asp-action="Index">Back to List</a>
+</div>*@
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
