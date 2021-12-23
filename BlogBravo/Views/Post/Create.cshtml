@@ -4,35 +4,54 @@
     ViewData["Title"] = "Create";
 }
 
-<h1 class="alert-dark font-monospace border border-dark rounded mb-5">Create Post - <span class="text-muted fst-italic">Blog Name</span></h1>
 
-<div class="row">
+
+<div class="row alert-dark border border-dark rounded">
     <div class="col-md-12">
+        <h1 class="mb-3">Create Post - <span class="text-muted fst-italic">Blog Name</span></h1>
         <form asp-action="Create" id="post-form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group" >
+            <div class="form-group">
                 <label asp-for="Title" class="control-label fw-bolder h4 mr-5"></label>
-                <input asp-for="Title" class="form-control border-dark" maxlength="50" id="post-title" onkeyup="(function () {document.querySelector('#post-title-count').innerText = 'Count (max. 50): ' + document.querySelector('#post-title').value.length; return false; })(); return false;"/>
+                <input asp-for="Title" class="form-control border-dark" maxlength="50" id="post-title" onkeyup="(function () {document.querySelector('#post-title-count').innerText = 'Count (max. 50): ' + document.querySelector('#post-title').value.length; return false; })(); return false;" />
                 <span class="alert-dark text-danger float-right" id="post-title-count" style="font-size:0.75rem;">Count (max. 50): 0</span>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Body" class="control-label fw-bold h4"></label>
-                <textarea asp-for="Body" class="form-control border-dark font-monospace" rows="10" id="post-body" onkeyup="(function () {document.querySelector('#post-body-count').innerText = 'Count: ' + document.querySelector('#post-body').value.length; return false; })(); return false;"></textarea>
-                <span class="alert-dark text-danger float-right" id="post-body-count" style="font-size:0.75rem;">Count : 0</span>
+                <textarea asp-for="Body" maxlength="2500" class="form-control border-dark font-monospace" rows="10" id="post-body" onkeyup="(function () {document.querySelector('#post-body-count').innerText = 'Count (max. 2500): ' + document.querySelector('#post-body').value.length; return false; })(); return false;"></textarea>
+                <span class="alert-dark text-danger float-right" id="post-body-count" style="font-size:0.75rem;">Count (max. 2500): 0</span>
                 <span asp-validation-for="Body" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Tag" class="control-label fw-bold h4"></label>
-                <div class="input-group mb-5">
-                    <input asp-for="Tag" class="form-control border-dark rounded mr-4" />
+                <div class="input-group">
+                    <input asp-for="Tag" maxlength="50" class="form-control border-dark rounded mr-4" id="post-tag" onkeyup="(function () {document.querySelector('#post-tag-count').innerText = 'Count (max. 50): ' + document.querySelector('#post-tag').value.length; return false; })(); return false;"/>
                     <span asp-validation-for="Tag" class="text-danger"></span>
                     <div class="input-group-append">
-                        <input type="button" value="Create Tag" class="btn btn-outline-dark rounded" />
+                        <input type="button" value="Create Tag" class="btn btn-outline-dark rounded" onclick="CreateTag()"/>
                     </div>
                 </div>
+                <span class="text-danger mb-2 float-right" id="post-tag-count" style="font-size:0.75rem; padding-right: 120px;">Count (max. 50): 0</span>
+                
+                <div class="form-check-inline mt-2 mb-2" id="tag-list" style="font-size:0.75rem;">
+                    <input name="first-tag" id="first-tag-input" type="checkbox" class="form-check-input" hidden />
+                    <label for="first-tag" id="first-tag" class="form-check-label mr-2" hidden>none</label>
+                    <input name="second-tag" id="second-tag-input" type="checkbox" class="form-check-input" hidden/>
+                    <label for="second-tag" id="second-tag" class="form-check-label mr-2" hidden>none</label>
+                    <input name="third-ag" id="third-tag-input" type="checkbox" class="form-check-input" hidden/>
+                    <label for="third-tag" id="third-tag" class="form-check-label mr-2" hidden>none</label>
+                    <input name="fourth-tag" id="fourth-tag-input" type="checkbox" class="form-check-input" hidden/>
+                    <label for="fourth-tag" id="fourth-tag" class="form-check-label mr-2" hidden>none</label>
+                    <input name="fifth-tag" id="fifth-tag-input" type="checkbox" class="orm-check-input" hidden/>
+                    <label for="fifth-tag" id="fifth-tag" class="form-check-label mr-2" hidden>none</label>
+                    <input type="button" value="Remove Tag" id="remove-tag-btn" class="btn btn-outline-dark btn-sm rounded" style="font-size:.75rem;" onclick="RemoveTag()" hidden/>
+                </div>
             </div>
-            <div class="form-group" hidden>
+
+            <hr />
+            @*<div class="form-group" hidden>
                 <label asp-for="Created" class="control-label"></label>
                 <input asp-for="Created" class="form-control" />
                 <span asp-validation-for="Created" class="text-danger"></span>
@@ -41,27 +60,155 @@
                 <label asp-for="Views" class="control-label"></label>
                 <input asp-for="Views" class="form-control" />
                 <span asp-validation-for="Views" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group" hidden>
                 <label asp-for="BlogId" class="control-label"></label>
                 <select asp-for="BlogId" class="form-control" asp-items="ViewBag.BlogId"></select>
             </div>
             <div class="form-group">
-                @*<input type="submit" value="Create" class="btn btn-outline-dark" onclick="JavaScript:(function() {console.log('function postDateTime' + new Date()); $('#post-creation-datetime-input').val(new Date()); });(); return false;" />*@
-                @*<input type="submit" value="Create" class="btn btn-outline-dark" onclick="(function () { alert(new Date()); document.querySelector('#post-creation-datetime-input').setAttribute('value', new Date()); alert(document.querySelector('#post-creation-datetime-input').getAttribute('value')); return false; })(); submit();" />*@
                 <input type="submit" value="Save Post" class="btn btn-outline-dark mr-10" />
                 <input type="button" value="Cancel" class="btn btn-outline-dark float-md-right" />
             </div>
-</form>
+        </form>
     </div>
 </div>
 <script>
     window.onload = function () { document.querySelector("#post-form").reset() };
+    window.addEventListener("contextmenu", e => e.preventDefault());
 </script>
 
-@*<div>
-    <a asp-action="Index">Back to List</a>
-</div>*@
+<script>
+    let tagIndex = 0;
+    let tags = [];
+    function CreateTag() {
+
+        let none = "none";
+        let space = ' ';
+        let hash = '#';
+
+        // Get the value of CheckBox Tag Labels and the value of the Input field
+        var firstTag = document.querySelector("#first-tag").innerText; console.log("firstTag: " + firstTag);
+        var secondTag = document.querySelector("#second-tag").innerText; console.log("secondTag: " + secondTag);
+        var thirdTag = document.querySelector("#third-tag").innerText; console.log("thirdTag: " + thirdTag);
+        var fourthTag = document.querySelector("#fourth-tag").innerText; console.log("fourthTag: " + fourthTag);
+        var fifthTag = document.querySelector("#fifth-tag").innerText; console.log("fifthTag: " + fifthTag);
+        var tagStr = document.querySelector("#post-tag").value; console.log("tagStr: " + tagStr);
+
+        // split the value of the input tag field if the words are seperated by space
+        var tagString = tagStr.split(space); console.log("tagString: " + tagString);
+        tagStr = ""; console.log("tagStr: " + tagStr);
+
+        for (var i = 0; i < tagString.length; i++) {
+            // Keep only alphanumeric characters
+            tagString[i] = tagString[i].replace(/[^0-9a-z]/gi, ''); console.log("tagString Length: " + tagString[i].length);
+            if (tagString[i].length != 0) {
+                tagStr += tagString[i].charAt(0).toUpperCase() + tagString[i].slice(1).toLowerCase();
+            }
+        }
+
+        // Get and check whether the length of Tag is bigger than zero
+        var tagStrLen = tagStr.length; console.log("tagStringLen: " + tagStrLen);
+        tagStr = hash + tagStr; // Add a # at the beginnig of the Tag
+
+        for (var i = 0; i < tagIndex; i++) {
+            console.log("index: " + i + " tags: " + tags[i]);
+            if (tags[i] == tagStr) {
+                alert("Dubplicate Tag!");
+                tagStrLen = -1;
+            }
+        }
+
+        if (tagStrLen > 0) {
+            if (firstTag == none) {
+                console.log("firstTag check: " + firstTag);
+                document.querySelector("#first-tag").innerText = tagStr; console.log(document.querySelector("#first-tag").innerText);
+                document.querySelector("#first-tag").hidden = false;
+                document.querySelector("#first-tag-input").hidden = false;
+                document.querySelector("#remove-tag-btn").hidden = false;
+            }
+            else if (secondTag == none) {
+                document.querySelector("#second-tag").innerText = tagStr;
+                document.querySelector("#second-tag").hidden = false;
+                document.querySelector("#second-tag-input").hidden = false;
+            }
+            else if (thirdTag == none) {
+                document.querySelector("#third-tag").innerText = tagStr;
+                document.querySelector("#third-tag").hidden = false;
+                document.querySelector("#third-tag-input").hidden = false;
+            }
+            else if (fourthTag == none) {
+                document.querySelector("#fourth-tag").innerText = tagStr;
+                document.querySelector("#fourth-tag").hidden = false;
+                document.querySelector("#fourth-tag-input").hidden = false;
+            }
+            else if (fifthTag == none) {
+                document.querySelector("#fifth-tag").innerText = tagStr;
+                document.querySelector("#fifth-tag").hidden = false;
+                document.querySelector("#fifth-tag-input").hidden = false;
+            }
+
+            // Add to the list of existing tags
+            if (tagIndex < 5) {
+                console.log("tagStr: " + tagStr);
+                tags[tagIndex] = tagStr; console.log("tags: " + tags[tagIndex]);
+                tagIndex++; console.log("Tag index: " + tagIndex);
+            }
+        }
+        else if (tagStrLen == 0) {
+            alert("Empty or whitespace tags cannot be created");
+        }
+
+        $("#tag-list input").each(function () {
+
+            if ($(this).next().text() != none) {
+                $(this).show();
+                $(this).next().show();
+            }
+        });
+
+        document.querySelector("#post-tag").value = "";
+    }
+
+    function RemoveTag() {
+        tags = [];
+        tagIndex = 0;
+        var numberOfChecked = 0;
+
+        $("#tag-list input").each(function () {
+
+            if ($(this).is(":checked")) {
+                numberOfChecked++;
+            }
+        });
+
+        if (numberOfChecked == 0) {
+            alert("No tag was selected!");
+            return false;
+        }
+        else if (numberOfChecked > 0) {
+            $("#tag-list input").each(function () {
+
+                if ($(this).is(":checked")) {
+                    $(this).hide();
+                    $(this).prop('checked', false);
+                    $(this).next().hide();
+                    $(this).next().text("none");
+                }
+            });
+        }
+
+        var numberOfDelete = 0;
+
+        $("#tag-list input").each(function () {
+            if ($(this).next().text() == "none") { numberOfDelete++; }
+        });
+
+        console.log("numberOfChecked: " + numberOfDelete);
+        if (numberOfDelete == 5) {
+            $("#remove-tag-btn").hide();
+        }
+    }
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
