@@ -1,0 +1,51 @@
+﻿@model BlogBravo.Models.Blog
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class=" border border-dark alert-dark rounded mt-5">
+    <h1 class="mb-3 ml-3">Edit Blog</h1>
+    <div>
+        <form asp-action="Edit" id="blog-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group col-md-5">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" id="blog-title" class="form-control" onkeyup="(function () {document.querySelector('#blog-title-count').innerText = 'Count (max. 50): ' + document.querySelector('#blog-title').value.length; return false; })(); return false;" />
+                <span class="alert-dark text-danger float-right" id="blog-title-count" style="font-size:0.75rem;">Count (max. 50): 0</span>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-12">
+                <label asp-for="Body" class="control-label"></label>
+                <textarea asp-for="Body" maxlength="500" id="blog-body" class="form-control" onkeyup="(function () {document.querySelector('#blog-body-count').innerText = 'Count (max. 500): ' + document.querySelector('#blog-body').value.length; return false; })(); return false;"></textarea>
+                <span class="alert-dark text-danger float-right" id="blog-body-count" style="font-size:0.75rem;">Count (max. 500): 0</span>
+                <span asp-validation-for="Body" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="Created" class="control-label"></label>
+                <input asp-for="Created" class="form-control" />
+                <span asp-validation-for="Created" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-5" hidden>
+                <label asp-for="AuthorId" class="control-label"></label>
+                <input type="text" asp-for="AuthorId" maxlength="500" class="form-control" value="@ViewBag.AuthorId" />
+            </div>
+            <div class="form-group mt-5">
+                <input type="submit" value="Save Changes" class="btn btn-outline-success ml-3" />
+                <a class="btn btn-outline-dark float-right mr-3" asp-area="" asp-controller="Blog" asp-action="Index">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Form Reset
+    window.onload = function () {
+        document.querySelector('#blog-title-count').innerText = 'Count (max. 50): ' + document.querySelector('#blog-title').value.length;
+        document.querySelector('#blog-body-count').innerText = 'Count (max. 500): ' + document.querySelector('#blog-body').value.length;
+    }
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,65 @@
+﻿@model IEnumerable<BlogBravo.Models.Post>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container alert-dark border border-dark rounded" max-width="100%;">
+    <h1>Index</h1>
+    <p>
+        <a class="btn btn-outline-success py-0 text-monospace" asp-action="Create">Create New Post</a>
+    </p>
+    <hr />
+    <table class="table table-striped text-monospace">
+        <thead class="text-monospace">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Body)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Created)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Views)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Blog)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-monospace">
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td class="text-monospace">
+                            @Html.DisplayFor(modelItem => item.Body)
+                        </td>
+                        <td class="text-monospace">
+                            @Html.DisplayFor(modelItem => item.Created)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Views)
+                        </td>
+                        <td class="text-monospace">
+                            @Html.DisplayFor(modelItem => item.Blog.Body)
+                        </td>
+                        <td class="text-monospace">
+                            <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Edit" asp-route-id="@item.Id" style="font-size:0.5rem;">Edit</a> |
+                            <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Details" asp-route-id="@item.Id" style="font-size:0.5rem;">Details</a> |
+                            <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Delete" asp-route-id="@item.Id" style="font-size:0.5rem;">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

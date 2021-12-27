@@ -1,22 +1,22 @@
-﻿using BlogBravo.Areas.Identity.Pages.Account;
-using BlogBravo.Data;
-using BlogBravo.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using BlogBravo.Data;
+using BlogBravo.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using BlogBravo.Areas.Identity.Pages.Account;
 
 namespace BlogBravo.Controllers
 {
-    public class PostController : Controller
+    [Authorize(Roles = "author")]
+    public class BlogController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -24,7 +24,7 @@ namespace BlogBravo.Controllers
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        public PostController(
+        public BlogController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -38,30 +38,14 @@ namespace BlogBravo.Controllers
             _emailSender = emailSender;
         }
 
-        // GET: Post
+        // GET: Blog
         public async Task<IActionResult> Index()
         {
-            string blogId = null;
-
-            if (blogId == null)
-            {
-                var applicationDbContext = _context.Posts;
-                return View(await applicationDbContext.ToListAsync());
-            }
-            else
-            {
-                if (!String.IsNullOrEmpty(Request.Form["blogid"]))
-                {
-                    blogId = Request.Form["blogid"];
-                }
-
-                var applicationDbContext = _context.Posts.Include(p => p.Blog);
-                return View(await applicationDbContext.ToListAsync());
-            }
+            var applicationDbContext =  _context.Blogs.Include(b => b.Author);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-
-        // GET: Post/Details/5
+        // GET: Blog/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -69,42 +53,59 @@ namespace BlogBravo.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts
-                .Include(p => p.Blog)
+            var blog = await _context.Blogs
+                .Include(b => b.Author)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
+            if (blog == null)
             {
                 return NotFound();
             }
 
-            return View(post);
+            return View(blog);
         }
 
-        // GET: Post/Create
+        // GET: Blog/Create
         public IActionResult Create()
         {
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body");
-            return View();
+            string userName = _userManager.GetUserId(HttpContext.User);
+
+            if (!String.IsNullOrEmpty(userName))
+            {
+                // Get the Current User Id and send it to page for display
+                ViewBag.AuthorId = _userManager.GetUserId(HttpContext.User);
+                //ViewData["AuthorId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id");
+                return View();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
-        // POST: Post/Create
+        // POST: Blog/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Body,Created,Views,BlogId")] Post post)
+        public async Task<IActionResult> Create([Bind("Id,Title,Body,Created,AuthorId")] Blog blog)
         {
+            ApplicationUser author = await _userManager.GetUserAsync(HttpContext.User);
+            // author.Email = _userManager.GetUserName(HttpContext.User);
             if (ModelState.IsValid)
             {
-                _context.Add(post);
+                blog.Created = DateTime.Now;
+                blog.AuthorId = author.Id;
+                blog.Author = author;
+                _context.Add(blog);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body", post.BlogId);
-            return View(post);
+
+            ViewData["AuthorId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", blog.AuthorId);
+            return View(blog);
         }
 
-        // GET: Post/Edit/5
+        // GET: Blog/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -112,23 +113,27 @@ namespace BlogBravo.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts.FindAsync(id);
-            if (post == null)
+            var blog = await _context.Blogs.FindAsync(id);
+            if (blog == null)
             {
                 return NotFound();
             }
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body", post.BlogId);
-            return View(post);
+
+            //ViewBag.AuthorId = _userManager.GetUserId(HttpContext.User);
+            //ViewData["AuthorId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", blog.AuthorId);
+            return View(blog);
         }
 
-        // POST: Post/Edit/5
+        // POST: Blog/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Body,Created,Views,BlogId")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Body,Created,AuthorId")] Blog blog)
         {
-            if (id != post.Id)
+            ApplicationUser author = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (id != blog.Id)
             {
                 return NotFound();
             }
@@ -137,12 +142,14 @@ namespace BlogBravo.Controllers
             {
                 try
                 {
-                    _context.Update(post);
+                    blog.AuthorId = author.Id;
+                    blog.Author = author;
+                    _context.Update(blog);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PostExists(post.Id))
+                    if (!BlogExists(blog.Id))
                     {
                         return NotFound();
                     }
@@ -153,11 +160,11 @@ namespace BlogBravo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body", post.BlogId);
-            return View(post);
+            ViewData["AuthorId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", blog.AuthorId);
+            return View(blog);
         }
 
-        // GET: Post/Delete/5
+        // GET: Blog/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -165,31 +172,31 @@ namespace BlogBravo.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts
-                .Include(p => p.Blog)
+            var blog = await _context.Blogs
+                .Include(b => b.Author)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
+            if (blog == null)
             {
                 return NotFound();
             }
 
-            return View(post);
+            return View(blog);
         }
 
-        // POST: Post/Delete/5
+        // POST: Blog/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await _context.Posts.FindAsync(id);
-            _context.Posts.Remove(post);
+            var blog = await _context.Blogs.FindAsync(id);
+            _context.Blogs.Remove(blog);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PostExists(int id)
+        private bool BlogExists(int id)
         {
-            return _context.Posts.Any(e => e.Id == id);
+            return _context.Blogs.Any(e => e.Id == id);
         }
     }
 }
