@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace BlogBravo.Controllers
 {
+    [Authorize(Roles = "author")]
     public class PostController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -39,22 +40,16 @@ namespace BlogBravo.Controllers
         }
 
         // GET: Post
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? blogId)
         {
-            string blogId = null;
-
-            if (blogId == null)
+            if (blogId == 0)
             {
                 var applicationDbContext = _context.Posts;
                 return View(await applicationDbContext.ToListAsync());
             }
             else
             {
-                if (!String.IsNullOrEmpty(Request.Form["blogid"]))
-                {
-                    blogId = Request.Form["blogid"];
-                }
-
+                ViewBag.BlogId = blogId;
                 var applicationDbContext = _context.Posts.Include(p => p.Blog);
                 return View(await applicationDbContext.ToListAsync());
             }
@@ -81,9 +76,11 @@ namespace BlogBravo.Controllers
         }
 
         // GET: Post/Create
-        public IActionResult Create()
+        [Route("/Post/Create/{id}")]
+        public IActionResult Create(int blogId)
         {
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body");
+            ViewBag.CreateBlogId = blogId;
+            //ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body");
             return View();
         }
 
@@ -92,11 +89,56 @@ namespace BlogBravo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Body,Created,Views,BlogId")] Post post)
+        public async Task<IActionResult> CreatePost(Post post)
         {
+            Tag tag = new Tag();
+            string[] tags = new string[5]; // Max 5 tags
+            string none = "none";
+            bool tagAlreadyExist = false;
+
             if (ModelState.IsValid)
             {
+                tags[0] = Request.Form["first-tag"];
+                tags[1] = Request.Form["second-tag"];
+                tags[2] = Request.Form["third-tag"];
+                tags[3] = Request.Form["fourth-tag"];
+                tags[4] = Request.Form["fifth-tag"];
+
+                foreach (string tagStr in tags)
+                {
+                    if (tagStr != none)
+                    {
+                        // Check for duplicate Tags
+                        List<Tag> tagList = _context.Tags.Where(t => t.Name == tagStr).ToList();
+
+                        foreach (Tag tagItem in tagList)
+                        {
+                            if (String.Equals(tagItem.Name.ToUpper(),tagStr.ToUpper()))
+                            {
+                                tagAlreadyExist = true;
+                                tag = tagItem;
+                                break;
+                            }
+                            else
+                            {
+                                tagAlreadyExist = false;
+                            }
+                        }
+
+
+                        if (!tagAlreadyExist)
+                        {
+                            post.Tag.Add(new Tag() { Name = tagStr });
+                        }
+                        else
+                        {
+                            post.Tag.Add(tag);
+                        }
+                    }
+                }
+
                 _context.Add(post);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

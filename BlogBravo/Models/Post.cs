@@ -8,6 +8,10 @@ namespace BlogBravo.Models
 {
     public class Post
     {
+        public Post()
+        {
+            this.Tag = new List<Tag>();
+        }
         public int Id { get; set; }
         [Required]
         [StringLength(50)]
@@ -16,13 +20,11 @@ namespace BlogBravo.Models
         public string Body { get; set; }
         public DateTime Created { get; set; }
         public int Views { get; set; }
-        [Required]
+
         public virtual Blog Blog { get; set; }
         [Required]
         public int BlogId { get; set; }
         public virtual ICollection<Comment> Comment { get; set; }
-
-        [Required]
         public virtual ICollection<Tag> Tag { get; set; }
     }
 }

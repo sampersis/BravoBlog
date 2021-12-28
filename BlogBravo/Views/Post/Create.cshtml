@@ -7,7 +7,7 @@
 <div class="row alert-dark border border-dark rounded">
     <div class="col-md-12">
         <h1 class="mb-3">Create Post - <span class="text-muted fst-italic">Blog Name</span></h1>
-        <form asp-action="Create" id="post-form" oninput="(function () {document.querySelector('#create-post-btn').disabled = false; })();return false;">
+        <form asp-area="" asp-controller="Post" asp-action="CreatePost" id="post-form" oninput="(function () {document.querySelector('#create-post-btn').disabled = false; })();return false;">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label fw-bolder h4 mr-5"></label>
@@ -21,43 +21,56 @@
                 <span class="alert-dark text-danger float-right" id="post-body-count" style="font-size:0.75rem;">Count (max. 2500): 0</span>
                 <span asp-validation-for="Body" class="text-danger"></span>
             </div>
-
+            @*<div class="form-group" hidden>
+                <label asp-for="Created" class="control-label"></label>
+                <input asp-for="Created" class="form-control" />
+                <span asp-validation-for="Created" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="Views" class="control-label"></label>
+                <input asp-for="Views" class="form-control" />
+                <span asp-validation-for="Views" class="text-danger"></span>
+            </div>*@
             <div class="form-group">
-                <label asp-for="Tag" class="control-label fw-bold h4"></label>
+                <label class="control-label fw-bold h4"></label>
                 <div class="input-group">
-                    <input asp-for="Tag" maxlength="50" class="form-control border-dark rounded mr-4" id="post-tag" onkeyup="(function () {document.querySelector('#post-tag-count').innerText = 'Count (max. 50): ' + document.querySelector('#post-tag').value.length; return false; })(); return false;" />
-                    <span asp-validation-for="Tag" class="text-danger"></span>
+                    <input maxlength="50" class="form-control border-dark rounded mr-4" id="post-tag" onkeyup="(function () {document.querySelector('#post-tag-count').innerText = 'Count (max. 50): ' + document.querySelector('#post-tag').value.length; return false; })(); return false;" />
+                    @*<span asp-validation-for="Tag" class="text-danger"></span>*@
                     <div class="input-group-append">
                         <input type="button" value="Create Tag" class="btn btn-outline-dark rounded" onclick="CreateTag()" />
                     </div>
                 </div>
                 <span class="text-danger mb-2 float-right" id="post-tag-count" style="font-size:0.75rem; padding-right: 120px;">Count (max. 50): 0</span>
 
-                <div class="form-check-inline mt-2 mb-2" id="tag-list" style="font-size:0.75rem;">
-                    <input name="first-tag" id="first-tag-input" type="checkbox" class="form-check-input" hidden />
-                    <label for="first-tag" id="first-tag" class="form-check-label mr-2" hidden>none</label>
-                    <input name="second-tag" id="second-tag-input" type="checkbox" class="form-check-input" hidden />
-                    <label for="second-tag" id="second-tag" class="form-check-label mr-2" hidden>none</label>
-                    <input name="third-ag" id="third-tag-input" type="checkbox" class="form-check-input" hidden />
-                    <label for="third-tag" id="third-tag" class="form-check-label mr-2" hidden>none</label>
-                    <input name="fourth-tag" id="fourth-tag-input" type="checkbox" class="form-check-input" hidden />
-                    <label for="fourth-tag" id="fourth-tag" class="form-check-label mr-2" hidden>none</label>
-                    <input name="fifth-tag" id="fifth-tag-input" type="checkbox" class="orm-check-input" hidden />
-                    <label for="fifth-tag" id="fifth-tag" class="form-check-label mr-2" hidden>none</label>
+                <div class="form-group form-check-inline mt-2 mb-2" id="tag-list" style="font-size:0.75rem;">
+                    <input id="first-tag-input" type="checkbox" class="form-check-input" hidden />
+                    <input id="first-tag" name="first-tag" value="none" class="form-check-label mr-2" hidden>
+
+                    <input id="second-tag-input" type="checkbox" class="form-check-input" hidden />
+                    <input id="second-tag" name="second-tag" value="none" class="form-check-label mr-2" hidden>
+
+                    <input id="third-tag-input" type="checkbox" class="form-check-input" hidden />
+                    <input id="third-tag" name="third-tag" value="none" class="form-check-label mr-2" hidden>
+
+                    <input id="fourth-tag-input" type="checkbox" class="form-check-input" hidden />
+                    <input name="fourth-tag" value="none" id="fourth-tag" class="form-check-label mr-2" hidden>
+
+                    <input id="fifth-tag-input" type="checkbox" class="orm-check-input" hidden />
+                    <input name="fifth-tag" value="none" id="fifth-tag" class="form-check-label mr-2" hidden>
+
                     <input type="button" value="Remove Tag" id="remove-tag-btn" class="btn btn-outline-dark btn-sm rounded" style="font-size:.75rem;" onclick="RemoveTag()" hidden />
                 </div>
             </div>
-
             <hr />
 
             <div class="form-group" hidden>
                 <label asp-for="BlogId" class="control-label"></label>
-                <select asp-for="BlogId" class="form-control" asp-items="ViewBag.BlogId"></select>
+                <input asp-for="BlogId" type="number" class="form-control" value="@ViewBag.CreateBlogId" readonly />
             </div>
 
             <div class="form-group">
                 <input id="create-post-btn" type="submit" value="Create Post" class="btn btn-outline-success" disabled />
-                <a class="btn btn-outline-dark float-right" asp-area="" asp-controller="Home" asp-action="Index">Cancel</a>
+                <a class="btn btn-outline-dark float-right" asp-area="" asp-controller="Post" asp-action="Index">Cancel</a>
             </div>
         </form>
     </div>

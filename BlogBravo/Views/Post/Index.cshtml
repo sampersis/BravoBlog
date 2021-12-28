@@ -6,9 +6,12 @@
 
 <div class="container alert-dark border border-dark rounded" max-width="100%;">
     <h1>Index</h1>
-    <p>
-        <a class="btn btn-outline-success py-0 text-monospace" asp-action="Create">Create New Post</a>
-    </p>
+    @*<p>
+        <a class="btn btn-outline-success py-0 text-monospace" asp-route-id="@ViewBag.BlogId" asp-action="Create">Create New Post</a>
+    </p>*@
+    <form class="btn-group" method="post">
+        <input type="submit" value="Create New Post" class="btn btn-outline-success text-monospace rounded py-0" asp-controller="Post" asp-action="Create" asp-route-id="@ViewBag.BlogId" />
+    </form>
     <hr />
     <table class="table table-striped text-monospace">
         <thead class="text-monospace">
