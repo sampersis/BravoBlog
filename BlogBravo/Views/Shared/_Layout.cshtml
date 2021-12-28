@@ -15,6 +15,10 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
+    @using Microsoft.AspNetCore.Identity
+    @using BlogBravo.Data
+    @inject SignInManager<ApplicationUser> SignInManager
+    @inject UserManager<ApplicationUser> UserManager
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -27,28 +31,13 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home  <i class="fas fa-home"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark mr-5" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy  <i class="fas fa-user-secret"></i></a>
                         </li>
                         <li>
-                            <div class="dropdown mr-4">
-                                <button class="btn dropdown-toggle" type="button" id="post-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    My Page
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="post-menu">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Blog" asp-action="Index">My Blog Page</a>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Post" asp-action="Index">Post Index</a>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Post" asp-action="Create">Post CreatePage</a>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Post" asp-action="Edit">Post Edit Page</a>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Post" asp-action="Delete">Post Delete Page</a>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Post" asp-action="Details">Post Details Page</a>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <form class="form-inline">
+                            <form class="form-inline ml-5">
                                 <div class="input-group">
                                     <input type="search" placeholder="Search..." class="form-control border border-dark">
                                     <div class="input-group-append">

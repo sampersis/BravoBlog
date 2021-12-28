@@ -42,16 +42,26 @@ namespace BlogBravo.Controllers
         // GET: Post
         public async Task<IActionResult> Index(int? blogId)
         {
+            ApplicationUser author = await _userManager.GetUserAsync(HttpContext.User);
+            List<Post> userPosts = new List<Post>();
+
             if (blogId == 0)
             {
-                var applicationDbContext = _context.Posts;
-                return View(await applicationDbContext.ToListAsync());
+                //var applicationDbContext = _context.Posts;
+                //return View(await applicationDbContext.ToListAsync());
+                return View();
             }
             else
             {
                 ViewBag.BlogId = blogId;
-                var applicationDbContext = _context.Posts.Include(p => p.Blog);
-                return View(await applicationDbContext.ToListAsync());
+                var userBlogs = _context.Blogs.Where(b => b.Author == author);
+                foreach(var userBlog in userBlogs)
+                {
+                    List<Post> tempPost = _context.Posts.Where(p => p.BlogId == userBlog.Id).ToList();
+                    userPosts.AddRange(tempPost);
+                }
+
+                return View(userPosts);
             }
         }
 

@@ -14,7 +14,7 @@
     </form>
     <hr />
     <table class="table table-striped text-monospace">
-        <thead class="text-monospace">
+        <thead class="text-monospace" style="font-size:0.8rem;">
             <tr>
                 <th>
                     @Html.DisplayNameFor(model => model.Title)
@@ -40,24 +40,24 @@
                 foreach (var item in Model)
                 {
                     <tr>
-                        <td class="text-monospace">
+                        <td class="text-monospace" style="font-size:0.6rem;">
                             @Html.DisplayFor(modelItem => item.Title)
                         </td>
-                        <td class="text-monospace">
+                        <td class="text-monospace" style="font-size:0.6rem;">
                             @Html.DisplayFor(modelItem => item.Body)
                         </td>
-                        <td class="text-monospace">
+                        <td class="text-monospace" style="font-size:0.6rem;">
                             @Html.DisplayFor(modelItem => item.Created)
                         </td>
-                        <td>
+                        <td class="text-monospace" style="font-size:0.6rem;">
                             @Html.DisplayFor(modelItem => item.Views)
                         </td>
-                        <td class="text-monospace">
+                        <td class="text-monospace" style="font-size:0.6rem;">
                             @Html.DisplayFor(modelItem => item.Blog.Body)
                         </td>
                         <td class="text-monospace">
-                            <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Edit" asp-route-id="@item.Id" style="font-size:0.5rem;">Edit</a> |
-                            <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Details" asp-route-id="@item.Id" style="font-size:0.5rem;">Details</a> |
+                            <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Edit" asp-route-id="@item.Id" style="font-size:0.5rem;">Edit</a>
+                            <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Details" asp-route-id="@item.Id" style="font-size:0.5rem;">Details</a>
                             <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Delete" asp-route-id="@item.Id" style="font-size:0.5rem;">Delete</a>
                         </td>
                     </tr>

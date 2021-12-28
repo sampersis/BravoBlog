@@ -12,12 +12,12 @@ function CreateTag() {
     let hash = '#';
 
     // Get the value of CheckBox Tag Labels and the value of the Input field
-    var firstTag = document.querySelector("#first-tag").value; // console.log("firstTag: " + firstTag);
-    var secondTag = document.querySelector("#second-tag").value; // console.log("secondTag: " + secondTag);
-    var thirdTag = document.querySelector("#third-tag").value; // console.log("thirdTag: " + thirdTag);
-    var fourthTag = document.querySelector("#fourth-tag").value; // console.log("fourthTag: " + fourthTag);
-    var fifthTag = document.querySelector("#fifth-tag").value; // console.log("fifthTag: " + fifthTag);
-    var tagStr = document.querySelector("#post-tag").value; // console.log("tagStr: " + tagStr);
+    var firstTag = document.querySelector("#first-tag").value; console.log("firstTag: " + firstTag);
+    var secondTag = document.querySelector("#second-tag").value; console.log("secondTag: " + secondTag);
+    var thirdTag = document.querySelector("#third-tag").value; console.log("thirdTag: " + thirdTag);
+    var fourthTag = document.querySelector("#fourth-tag").value; console.log("fourthTag: " + fourthTag);
+    var fifthTag = document.querySelector("#fifth-tag").value; console.log("fifthTag: " + fifthTag);
+    var tagStr = document.querySelector("#post-tag").value; console.log("tagStr: " + tagStr);
 
     // split the value of the input tag field if the words are seperated by space
     var tagString = tagStr.split(space); // console.log("tagString: " + tagString);
@@ -37,7 +37,7 @@ function CreateTag() {
 
     for (var i = 0; i < tagIndex; i++) {
         // console.log("index: " + i + " tags: " + tags[i]);
-        if (tags[i] == tagStr) {
+        if (tags[i].toUpperCase() == tagStr.toUpperCase()) {
             alert("Dubplicate Tag!");
             tagStrLen = -1;
         }
@@ -46,37 +46,42 @@ function CreateTag() {
     if (tagStrLen > 0) {
         if (firstTag == none) {
             // console.log("firstTag check: " + firstTag);
-            document.querySelector("#first-tag").value = tagStr; console.log(document.querySelector("#first-tag").value);
+            document.querySelector("#first-tag").value = tagStr; console.log("Inside 1st Tag: " + document.querySelector("#first-tag").value);
             document.querySelector("#first-tag").hidden = false;
             document.querySelector("#first-tag-input").hidden = false;
             document.querySelector("#remove-tag-btn").hidden = false;
+            document.querySelector('#post-tag-count').innerText = 'Count (max. 50): 0';
         }
         else if (secondTag == none) {
-            document.querySelector("#second-tag").value = tagStr; console.log(document.querySelector("#second-tag").value);
+            document.querySelector("#second-tag").value = tagStr; console.log("Inside 2nd Tag: " + document.querySelector("#second-tag").value);
             document.querySelector("#second-tag").hidden = false;
             document.querySelector("#second-tag-input").hidden = false;
+            document.querySelector('#post-tag-count').innerText = 'Count (max. 50): 0';
         }
         else if (thirdTag == none) {
-            document.querySelector("#third-tag").value = tagStr; console.log(document.querySelector("#third-tag").value);
+            document.querySelector("#third-tag").value = tagStr; console.log("Inside 3rd Tag: " + document.querySelector("#third-tag").value);
             document.querySelector("#third-tag").hidden = false;
             document.querySelector("#third-tag-input").hidden = false;
+            document.querySelector('#post-tag-count').innerText = 'Count (max. 50): 0';
         }
         else if (fourthTag == none) {
-            document.querySelector("#fourth-tag").value = tagStr; console.log(document.querySelector("#fourth-tag").value);
+            document.querySelector("#fourth-tag").value = tagStr; console.log("Inside 4th Tag: " + document.querySelector("#fourth-tag").value);
             document.querySelector("#fourth-tag").hidden = false;
             document.querySelector("#fourth-tag-input").hidden = false;
+            document.querySelector('#post-tag-count').innerText = 'Count (max. 50): 0';
         }
         else if (fifthTag == none) {
-            document.querySelector("#fifth-tag").value = tagStr; console.log(document.querySelector("#fifth-tag").value);
+            document.querySelector("#fifth-tag").value = tagStr; console.log("Inside 5th Tag: " + document.querySelector("#fifth-tag").value);
             document.querySelector("#fifth-tag").hidden = false;
             document.querySelector("#fifth-tag-input").hidden = false;
+            document.querySelector('#post-tag-count').innerText = 'Count (max. 50): 0';
         }
 
         // Add to the list of existing tags
         if (tagIndex < 5) {
             // console.log("tagStr: " + tagStr);
             tags[tagIndex] = tagStr; // console.log("tags: " + tags[tagIndex]);
-            tagIndex++; console.log("Tag index: " + tagIndex);
+            tagIndex++; // console.log("Tag index: " + tagIndex);
         }
     }
     else if (tagStrLen == 0) {
@@ -93,7 +98,7 @@ function CreateTag() {
         }
     });
 
-    document.querySelector("#post-tag").value = "";
+    document.querySelector("#post-tag").value = ""; // Reset the input where the tags are created
 }
 
 function RemoveTag() {

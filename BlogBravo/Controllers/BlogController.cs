@@ -41,7 +41,9 @@ namespace BlogBravo.Controllers
         // GET: Blog
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext =  _context.Blogs.Include(b => b.Author);
+            ApplicationUser author = await _userManager.GetUserAsync(HttpContext.User);
+
+            var applicationDbContext =  _context.Blogs.Where(b => b.Author == author);
             return View(await applicationDbContext.ToListAsync());
         }
 
