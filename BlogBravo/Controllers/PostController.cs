@@ -89,14 +89,19 @@ namespace BlogBravo.Controllers
         [Route("/Post/Create/{id}")]
         public IActionResult Create(int blogId)
         {
-            ViewBag.CreateBlogId = blogId;
-            //ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body");
+
+            string path = HttpContext.Request.Path.ToString();
+            string[] pathComponent = path.Split('/');
+
+            ViewBag.CreateBlogId = pathComponent[pathComponent.Length-1];
+            // ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body"); // This creates a list of BlogIds which is not required
             return View();
         }
 
         // POST: Post/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost, ActionName("Create")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePost(Post post)
@@ -121,20 +126,23 @@ namespace BlogBravo.Controllers
                         // Check for duplicate Tags
                         List<Tag> tagList = _context.Tags.Where(t => t.Name == tagStr).ToList();
 
-                        foreach (Tag tagItem in tagList)
+                        if (tagList.Count > 0)
                         {
-                            if (String.Equals(tagItem.Name.ToUpper(),tagStr.ToUpper()))
+                            foreach (Tag tagItem in tagList)
                             {
-                                tagAlreadyExist = true;
-                                tag = tagItem;
-                                break;
-                            }
-                            else
-                            {
-                                tagAlreadyExist = false;
+                                if (String.Equals(tagItem.Name.ToUpper(), tagStr.ToUpper()))
+                                {
+                                    tagAlreadyExist = true;
+                                    tag = tagItem;
+                                    break;
+                                }
+
                             }
                         }
-
+                        else
+                        {
+                            tagAlreadyExist = false;
+                        }
 
                         if (!tagAlreadyExist)
                         {
@@ -146,14 +154,17 @@ namespace BlogBravo.Controllers
                         }
                     }
                 }
+                post.Created = DateTime.Now; // Post creation date
+                //tagAlreadyExist = false;
 
-                _context.Add(post);
+                _context.Posts.Add(post);
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body", post.BlogId);
-            return View(post);
+            // ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body", post.BlogId);
+            // return View(post);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Post/Edit/5
@@ -164,12 +175,13 @@ namespace BlogBravo.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts.FindAsync(id);
+            var post = await _context.Posts.Include(p=> p.Tag).FirstOrDefaultAsync(p=> p.Id == id);
+
             if (post == null)
             {
                 return NotFound();
             }
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body", post.BlogId);
+            //ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body", post.BlogId);
             return View(post);
         }
 
@@ -178,19 +190,100 @@ namespace BlogBravo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Body,Created,Views,BlogId")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Body,Created,Views,Tag,BlogId")] Post post)
         {
+            Tag tag = new Tag();
+            string[] tags = new string[5]; // Max 5 tags
+            string none = "none";
+            bool tagAlreadyExist = false;
+
             if (id != post.Id)
             {
                 return NotFound();
             }
+            //else
+            //{
+            //    // Remove all tags from The post
+            //    var oldPost = await _context.Posts.Include(p => p.Tag).FirstOrDefaultAsync(p => p.Id == id);
+
+            //    foreach (Tag oldPostTag in oldPost.Tag)
+            //    {
+            //        oldPost.Tag.Remove(oldPostTag);
+            //        _context.Update(oldPost);
+            //        await _context.SaveChangesAsync();
+            //    }
+
+            //    try
+            //    {
+            //        _context.Update(oldPost);
+            //        await _context.SaveChangesAsync();
+
+            //    }
+            //    catch (DbUpdateConcurrencyException)
+            //    {
+            //        if (!PostExists(post.Id))
+            //        {
+            //            return NotFound();
+            //        }
+            //        else
+            //        {
+            //            throw;
+            //        }
+            //    }
+            //}
+
 
             if (ModelState.IsValid)
             {
+                tags[0] = Request.Form["first-tag"];
+                tags[1] = Request.Form["second-tag"];
+                tags[2] = Request.Form["third-tag"];
+                tags[3] = Request.Form["fourth-tag"];
+                tags[4] = Request.Form["fifth-tag"];
+
+                // delete all the tags from the post in the database
+
+                foreach (string tagStr in tags)
+                {
+                    if (tagStr != none)
+                    {
+                        // Check for duplicate Tags
+                        List<Tag> tagList = _context.Tags.Where(t => t.Name == tagStr).ToList();
+
+                        if (tagList.Count > 0)
+                        {
+                            foreach (Tag tagItem in tagList)
+                            {
+                                if (String.Equals(tagItem.Name.ToUpper(), tagStr.ToUpper()))
+                                {
+                                    tagAlreadyExist = true;
+                                    tag = tagItem;
+                                    break;
+                                }
+
+                            }
+                        }
+                        else
+                        {
+                            tagAlreadyExist = false;
+                        }
+
+                        if (!tagAlreadyExist)
+                        {
+                            post.Tag.Add(new Tag() { Name = tagStr });
+                        }
+                        //else
+                        //{
+                        //    post.Tag.Add(tag);
+                        //}
+                    }
+                }
+
                 try
                 {
-                    _context.Update(post);
-                    await _context.SaveChangesAsync();
+                        _context.Update(post);
+                        await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
