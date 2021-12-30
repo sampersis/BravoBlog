@@ -65,7 +65,6 @@ namespace BlogBravo.Controllers
             }
         }
 
-
         // GET: Post/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -74,15 +73,60 @@ namespace BlogBravo.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts
-                .Include(p => p.Blog)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            Post post = await _context.Posts.Include(p=>p.Comment).FirstOrDefaultAsync(p=>p.Id == id);
+            post = await _context.Posts.Include(p => p.Tag).FirstOrDefaultAsync(p => p.Id == id);
+            var comments =  _context.Comments.Include(c => c.Author).Where(c => c.PostId == id);
+
+            if (comments.Count() != 0)
+            {
+                foreach (var comment in comments)
+                {
+                    ViewBag.CommentAuthor = comment.Author.FirstName + " " + comment.Author.LastName + " (" + comment.Author.Email + ") ";
+                }
+            }
+
             if (post == null)
             {
                 return NotFound();
             }
 
             return View(post);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddComment(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            string blogId = Request.Form["blog-id"];
+            string commentUserName = Request.Form["post-comment-user"];
+
+            var post = await _context.Posts.Include(p => p.Comment).FirstOrDefaultAsync(p => p.Id == id);
+
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                post.Comment.Add(new Comment
+                {
+                    Created = DateTime.Now,
+                    Body = Request.Form["post-comment-body"],
+                    Author = await _userManager.GetUserAsync(HttpContext.User)
+                });
+
+                _context.Update(post);
+                await _context.SaveChangesAsync();
+            }
+
+            ViewBag.Comments = post.Comment;
+
+            return Redirect("/Post/Details/"+id);
         }
 
         // GET: Post/Create
@@ -174,7 +218,6 @@ namespace BlogBravo.Controllers
             {
                 return NotFound();
             }
-
             var post = await _context.Posts.Include(p=> p.Tag).FirstOrDefaultAsync(p=> p.Id == id);
 
             if (post == null)
@@ -193,6 +236,8 @@ namespace BlogBravo.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Body,Created,Views,Tag,BlogId")] Post post)
         {
             Tag tag = new Tag();
+            string postTitle = post.Title;
+            string postBody = post.Body;
             string[] tags = new string[5]; // Max 5 tags
             string none = "none";
             bool tagAlreadyExist = false;
@@ -201,37 +246,12 @@ namespace BlogBravo.Controllers
             {
                 return NotFound();
             }
-            //else
-            //{
-            //    // Remove all tags from The post
-            //    var oldPost = await _context.Posts.Include(p => p.Tag).FirstOrDefaultAsync(p => p.Id == id);
-
-            //    foreach (Tag oldPostTag in oldPost.Tag)
-            //    {
-            //        oldPost.Tag.Remove(oldPostTag);
-            //        _context.Update(oldPost);
-            //        await _context.SaveChangesAsync();
-            //    }
-
-            //    try
-            //    {
-            //        _context.Update(oldPost);
-            //        await _context.SaveChangesAsync();
-
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!PostExists(post.Id))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //}
-
+            else
+            {
+                // remove all tags from the  post
+                post = await _context.Posts.Include(p => p.Tag).FirstOrDefaultAsync(p => p.Id == id);
+                post.Tag.Clear();
+            }
 
             if (ModelState.IsValid)
             {
@@ -260,7 +280,6 @@ namespace BlogBravo.Controllers
                                     tag = tagItem;
                                     break;
                                 }
-
                             }
                         }
                         else
@@ -272,18 +291,20 @@ namespace BlogBravo.Controllers
                         {
                             post.Tag.Add(new Tag() { Name = tagStr });
                         }
-                        //else
-                        //{
-                        //    post.Tag.Add(tag);
-                        //}
+                        else
+                        {
+                            post.Tag.Add(tag);
+                        }
                     }
                 }
 
+                post.Title = postTitle;
+                post.Body = postBody;
+
                 try
                 {
-                        _context.Update(post);
-                        await _context.SaveChangesAsync();
-
+                    _context.Update(post);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {

@@ -5,13 +5,18 @@
 }
 
 <div class="container alert-dark border border-dark rounded" max-width="100%;">
-    <h1>Index</h1>
-    @*<p>
-        <a class="btn btn-outline-success py-0 text-monospace" asp-route-id="@ViewBag.BlogId" asp-action="Create">Create New Post</a>
-    </p>*@
-    <form class="btn-group" method="post">
-        <input type="submit" value="Create New Post" class="btn btn-outline-success text-monospace rounded py-0" asp-controller="Post" asp-action="Create" asp-route-id="@ViewBag.BlogId" />
-    </form>
+    <h1>Post List </h1>
+    @if (@ViewBag.BlogId != null)
+    {
+        <form class="btn-group" method="post">
+            <input type="submit" value="Create New Post" class="btn btn-outline-success text-monospace rounded py-0" asp-controller="Post" asp-action="Create" asp-route-id="@ViewBag.BlogId" />
+        </form>
+    }
+    else
+    {
+        <a value="Blog List" class="btn btn-outline-success text-monospace rounded py-0" asp-controller="Blog" asp-action="Index">Blog List</a>
+    }
+
     <hr />
     <table class="table table-striped text-monospace">
         <thead class="text-monospace" style="font-size:0.8rem;">
@@ -56,9 +61,9 @@
                             @Html.DisplayFor(modelItem => item.Blog.Body)
                         </td>
                         <td class="text-monospace">
-                            <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Edit" asp-route-id="@item.Id" style="font-size:0.5rem;">Edit</a>
-                            <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Details" asp-route-id="@item.Id" style="font-size:0.5rem;">Details</a>
-                            <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Delete" asp-route-id="@item.Id" style="font-size:0.5rem;">Delete</a>
+                            <a class="btn btn-outline-primary btn-sm py-0 mr-1 rounded" asp-controller="Post" asp-action="Edit" asp-route-id="@item.Id" style="font-size:0.5rem;">Edit</a>
+                            <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-controller="Post" asp-action="Details" asp-route-id="@item.Id" style="font-size:0.5rem;">View</a>
+                            <a class="btn btn-outline-danger btn-sm py-0 mr-1 rounded" asp-controller="Post" asp-action="Delete" asp-route-id="@item.Id" style="font-size:0.5rem;">Delete</a>
                         </td>
                     </tr>
                 }

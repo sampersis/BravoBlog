@@ -11,6 +11,7 @@ namespace BlogBravo.Models
         public Post()
         {
             this.Tag = new List<Tag>();
+            this.Comment = new List<Comment>();
         }
         public int Id { get; set; }
         [Required]
