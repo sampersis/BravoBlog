@@ -1,14 +1,30 @@
 ﻿@model BlogBravo.Models.Post
+@using BlogBravo.Data
+@inject ApplicationDbContext _context
 
 @{
     ViewData["Title"] = "Post View";
 
+    Model.Views++;
+
+    var post = _context.Posts.Find(Model.Id);
+    var blog = _context.Blogs.Find(Model.BlogId);
+
+    if (post != null)
+    {
+        post.Views = Model.Views;
+        _context.Update(post);
+        await _context.SaveChangesAsync();
+    }
+
 }
 
+
 <div class="container alert-dark border border-dark rounded py-3">
-    <h1 class="font-italic">@Model.Title </h1>
-    <span class="mr-3"><i class="text-success mr-1 fas fa-plus-square">  </i>@Model.Created</span>
-    <span class="mr-1"><i class="text-success fas fa-eye"></i></span><span id="post-views"> @Model.Views</span>
+    <h6 class="bg-dark text-white" style="width:fit-content;">@blog.Title</h6>
+    <h1 class="font-italic">@Model.Title</h1>
+    <span class="mr-3"><i class="mr-1 fas fa-plus-square">  </i>@Model.Created</span>
+    <span class="mr-1"><i class="fas fa-eye"></i></span><span id="post-views"> @Model.Views</span>
     <hr />
 
     <div>
@@ -17,21 +33,22 @@
     @if (Model.Tag.Count > 0)
     {
         string tags = "";
-        foreach(var tag in Model.Tag)
+        foreach (var tag in Model.Tag)
         {
             tags += @tag.Name + " ";
         }
-        <p>@tags</p>
+        <p class="">@tags</p>
     }
-        <hr />
-    @if (Model.Comment.Count > 0)
+    <hr />
+
+    @if (ViewBag.Comments != null)
     {
-        @foreach (var comment in Model.Comment)
+        @foreach (var comment in ViewBag.Comments)
         {
-            string commentTitle = @User.Identity.Name + " " + comment.Created;
+            string commentTitle = comment.Author.FirstName + " " + comment.Author.LastName + " (" + comment.Author.Email + ") " + comment.Created;
 
             <div id="@comment.Id" class='alert-dark border border-dark rounded mb-2' disabled>
-                <p style='font-size:0.7rem;'><span class="bg-info">@commentTitle</span>: @comment.Body</p>
+                <p style='font-size:0.7rem;'><span class="bg-dark text-white">@commentTitle</span>: @comment.Body</p>
             </div>
         }
     }
@@ -44,59 +61,61 @@
 
             <textarea id="post-comment-body" name="post-comment-body" maxlength="300" class="form-control border-dark font-monospace" rows="3" onkeyup="(function () {document.querySelector('#post-comment-body-count').innerText = 'Count (max. 300): ' + document.querySelector('#post-comment-body').value.length; return false; })(); return false;"></textarea>
             <span class="alert-dark text-danger float-right" id="post-comment-body-count" style="font-size:0.75rem;">Count (max. 300): 0</span>
-            <button type="submit" class="btn btn-sm btn-outline-dark mt-4 mb-2">Add Comment</button>
-            <button class="btn btn-outline-dark float-right mt-4 mb-2" asp-area="" asp-controller="Post" asp-action="Index">Cancel</button>
+            <div class="form-group mt-4 mb-2">
+                <button type="submit" class="btn btn-sm btn-outline-dark">Add Comment</button>
+                <button class="btn btn-outline-dark float-right" asp-area="" asp-controller="Post" asp-action="Index">Cancel</button>
+            </div>
         </form>
     </div>
 </div>
 
-<script>
-    window.onload = function () { document.querySelector("#comment-form").reset(); }
+@*<script>
+        window.onload = function () { document.querySelector("#comment-form").reset(); }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        if (document.readyState == "complete" || document.readyState == "interactive") {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (document.readyState == "complete" || document.readyState == "interactive") {
 
-            var postCnt;
+                var postCnt;
 
-            if (localStorage.getItem('view') != undefined) {
-                postCnt = localStorage.getItem('view');
-                postCnt++;
-            }
-            else {
-                console.log("Value of count after document load: " + postCnt);
-                var postCnt = document.querySelector("#post-views").innerText;
-                console.log("Post Count: " + postCnt);
-                if (!isNaN(postCnt)) {
-                    postCnt = parseInt(postCnt) + 1;
-                    console.log("Post Count: " + postCnt);
+                if (localStorage.getItem('view') != undefined) {
+                    postCnt = localStorage.getItem('view');
+                    postCnt++;
                 }
+                else {
+                    console.log("Value of count after document load: " + postCnt);
+                    var postCnt = document.querySelector("#post-views").innerText;
+                    console.log("Post Count: " + postCnt);
+                    if (!isNaN(postCnt)) {
+                        postCnt = parseInt(postCnt) + 1;
+                        console.log("Post Count: " + postCnt);
+                    }
+                }
+
+                localStorage.setItem("view", postCnt);
+                document.querySelector("#post-views").innerText = postCnt;
             }
+        });
 
+        function addComment() {
+            //reduce the number of visitor. Adding comment cannot be a new visit
+            var postCnt = localStorage.getItem('view');
+            postCnt--;
             localStorage.setItem("view", postCnt);
-            document.querySelector("#post-views").innerText = postCnt;
+
+            var username = document.querySelector("#post-comment-user").value;
+            const now = new Date();
+            var commentDate = now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate() + " " + now.getHours() + ":"
+                + now.getMinutes() + ":" + now.getSeconds();
+
+
+            var CommentString = "<div class='alert-dark border border-dark rounded mb-2' disabled><p style='font-size:0.6rem;'> [ "
+                + username + " " +
+                 commentDate +
+                " commented ]</p>" +
+                "<p style='font-size:0.8rem;'>" +
+                document.querySelector("#post-comment-body").value +
+                "</p></div>";
+
+            $("#comment").before(CommentString);
         }
-    });
-
-    function addComment() {
-        //reduce the number of visitor. Adding comment cannot be a new visit
-        var postCnt = localStorage.getItem('view');
-        postCnt--;
-        localStorage.setItem("view", postCnt);
-
-        var username = document.querySelector("#post-comment-user").value;
-        const now = new Date();
-        var commentDate = now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate() + " " + now.getHours() + ":"
-            + now.getMinutes() + ":" + now.getSeconds();
-
-
-        var CommentString = "<div class='alert-dark border border-dark rounded mb-2' disabled><p style='font-size:0.6rem;'> [ "
-            + username + " " +
-             commentDate +
-            " commented ]</p>" +
-            "<p style='font-size:0.8rem;'>" +
-            document.querySelector("#post-comment-body").value +
-            "</p></div>";
-
-        $("#comment").before(CommentString);
-    }
-</script>
+    </script>*@

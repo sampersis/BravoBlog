@@ -1,14 +1,46 @@
 ﻿@model IEnumerable<BlogBravo.Models.Blog>
+@using BlogBravo.Data
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext _context
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Blog List";
+
+    int totalNumberOfBlogs = 0;
+    int totalNumOfPosts = 0;
+    string[] userinfo = @User.Identity.Name.Split('@');
+    string user = userinfo[0];
+    user = char.ToUpper(user[0]) + user.Substring(1) + "'s";
+
+    var blogs = _context.Blogs.Where(b => b.Author.UserName == @User.Identity.Name);
+
+    if (blogs != null)
+    {
+        totalNumberOfBlogs = blogs.Count();
+
+        foreach (var blog in blogs)
+        {
+            var posts = _context.Posts.Where(p => p.BlogId == blog.Id);
+
+            if (posts != null)
+            {
+                totalNumOfPosts += posts.Count();
+            }
+        }
+    }
+
 }
 
 <div class="container alert-dark border border-dark rounded" max-width="100%;">
-    <h1 class="text-monospace">Blog List</h1>
-
+    <h3 class="bg-dark text-white border border-dark rounded text-monospace mt-2 " style="width:fit-content;">@user Blog List</h3>
+    <div class="mt-2 mb-3">
+        <span class="mr-3"><i class="mr-1 fas fa-blog"> </i>@totalNumberOfBlogs</span>
+        <span class="mr-3"><i class="mr-1 fas fa-mail-bulk"></i>@totalNumOfPosts</span>
+    </div>
     <p>
-        <a class="btn btn-outline-success py-0 text-monospace" asp-action="Create">Create New Blog</a>
+        <a class="btn btn-outline-dark py-0 text-monospace" asp-action="Create">Create A New Blog</a>
     </p>
     <table class="table table-striped" style="font-size:0.75rem;">
         <thead class="text-monospace">
@@ -23,7 +55,7 @@
                     @Html.DisplayNameFor(model => model.Body)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Created)
+                    @Html.DisplayNameFor(model => model.Created) on
                 </th>
                 <th></th>
             </tr>
@@ -31,30 +63,30 @@
         <tbody>
             @foreach (var item in Model)
             {
-            <tr>
-                <td class="text-monospace" style="font-size:0.6rem;" hidden>
-                    @{ ViewBag.BlogId = item.Id;}
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td class="text-monospace" style="font-size:0.6rem;">
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td class="text-monospace" style="font-size:0.6rem;">
-                    @Html.DisplayFor(modelItem => item.Body)
-                </td>
-                <td class="text-monospace" style="font-size:0.6rem;">
-                    @Html.DisplayFor(modelItem => item.Created)
-                </td>
-                <td class="btn-group text-monospace">
-                    <form class="btn-group" method="post">
-                        <input type="hidden" id="blogid" name="blogid" value="@ViewBag.BlogId" />
-                        <input type="submit" value ="Post List" class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-controller="Post" asp-action="Index" asp-route-id="@item.Id" style="font-size:0.5rem;" />
-                    </form>
-                        <a class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Edit" asp-route-id="@item.Id" style="font-size:0.5rem;">Edit</a>
-                        <a class="btn btn-outline-info btn-sm py-0 mr-1 rounded" asp-action="Details" asp-route-id="@item.Id" style="font-size:0.5rem;">View</a>
-                        <a class="btn btn-outline-danger btn-sm py-0 rounded" asp-action="Delete" asp-route-id="@item.Id" style="font-size:0.5rem;">Delete</a>
-                </td>
-            </tr>
+                <tr>
+                    <td class="text-monospace" style="font-size:0.6rem;" hidden>
+                        @{ ViewBag.BlogId = item.Id;}
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td class="text-monospace" style="font-size:0.6rem;">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td class="text-monospace" style="font-size:0.6rem;">
+                        @Html.DisplayFor(modelItem => item.Body)
+                    </td>
+                    <td class="text-monospace" style="font-size:0.6rem;">
+                        @Html.DisplayFor(modelItem => item.Created)
+                    </td>
+                    <td class="btn-group text-monospace">
+                        <form id="view-blog-posts" class="btn-group" method="post" asp-controller="Post" asp-action="Index" asp-route-id="@item.Id">
+                            <input type="hidden" id="blogid" name="blogid" value="@ViewBag.BlogId" />
+                            <a href="javascript:$('#view-blog-posts').submit();" title="View Blog's Posts"class="btn btn-outline-primary btn-sm py-0 mr-1 rounded" ><i class="fas fa-list-ol"></i></a>
+                        </form>
+                        <a title="Edit Blog" class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a>
+                        <a title="View Blog" class="btn btn-outline-info btn-sm py-0 mr-1 rounded" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i></a>
+                        <a title="Delete Blog" class="btn btn-outline-danger btn-sm py-0 rounded" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>

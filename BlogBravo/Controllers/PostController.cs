@@ -45,23 +45,28 @@ namespace BlogBravo.Controllers
             ApplicationUser author = await _userManager.GetUserAsync(HttpContext.User);
             List<Post> userPosts = new List<Post>();
 
-            if (blogId == 0)
+
+            if (blogId == null)
             {
-                //var applicationDbContext = _context.Posts;
-                //return View(await applicationDbContext.ToListAsync());
-                return View();
-            }
-            else
-            {
-                ViewBag.BlogId = blogId;
+                ViewBag.UserName = author.FirstName+"'s";
                 var userBlogs = _context.Blogs.Where(b => b.Author == author);
-                foreach(var userBlog in userBlogs)
+                ViewBag.UserBlogs = userBlogs;
+
+                foreach (var userBlog in userBlogs)
                 {
                     List<Post> tempPost = _context.Posts.Where(p => p.BlogId == userBlog.Id).ToList();
                     userPosts.AddRange(tempPost);
                 }
-
                 return View(userPosts);
+            }
+            else
+            {
+                ViewBag.BlogId = blogId;
+                var blog = _context.Blogs.Find(blogId);
+                ViewBag.BlogName = blog.Title;
+                var blogPosts = _context.Posts.Where(p => p.BlogId == blogId).ToList();
+
+                return View(blogPosts);
             }
         }
 
@@ -77,13 +82,7 @@ namespace BlogBravo.Controllers
             post = await _context.Posts.Include(p => p.Tag).FirstOrDefaultAsync(p => p.Id == id);
             var comments =  _context.Comments.Include(c => c.Author).Where(c => c.PostId == id);
 
-            if (comments.Count() != 0)
-            {
-                foreach (var comment in comments)
-                {
-                    ViewBag.CommentAuthor = comment.Author.FirstName + " " + comment.Author.LastName + " (" + comment.Author.Email + ") ";
-                }
-            }
+            ViewBag.Comments = comments;
 
             if (post == null)
             {
