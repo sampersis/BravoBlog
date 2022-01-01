@@ -21,29 +21,29 @@
     @if (@ViewBag.BlogId != null)
     {
         <form class="btn-group" method="post">
-            <input type="submit" value="Create New Post" class="btn btn-outline-dark text-monospace rounded py-0" asp-controller="Post" asp-action="Create" asp-route-id="@ViewBag.BlogId" />
+            <input type="submit" value="Create A New Post" class="btn btn-outline-dark text-monospace rounded py-0" asp-controller="Post" asp-action="Create" asp-route-id="@ViewBag.BlogId" />
         </form>
     }
     else
     {
         <form class="btn-group" method="post">
-            @if(ViewBag.UserBlogs != null)
+            @if (ViewBag.UserBlogs != null)
             {
                 <select id="list-of-blogs" class="mr-3" onchange="Selection(this.selectedIndex);">
                     <option value="0" selected="selected">All Blogs</option>
-                    @foreach(var blog in @ViewBag.UserBlogs)
+                    @foreach (var blog in @ViewBag.UserBlogs)
                     {
                         <option value="@blog.Id" id="@blog.Id">@blog.Title</option>
                     }
                 </select>
             }
-            <input type="submit" id ="blog-id-submit-btn" value="Create A New Post" class="btn btn-outline-dark text-monospace rounded py-0" asp-controller="Post" asp-action="Create" disabled/>
+            <input type="submit" id="blog-id-submit-btn" value="Create A New Post" class="btn btn-outline-dark text-monospace rounded py-0" asp-controller="Post" asp-action="Create" disabled />
         </form>
         @*<a value="Blog List" class="btn btn-outline-success text-monospace rounded py-0" asp-controller="Blog" asp-action="Index">Blog List</a>*@
     }
 
     <hr />
-    <table class="table table-striped text-monospace">
+    <table id="blog-posts-list" class="table table-striped text-monospace">
         <thead class="text-monospace" style="font-size:0.8rem;">
             <tr>
                 <th>
@@ -70,7 +70,7 @@
                 foreach (var item in Model)
                 {
                     string bodyStringToView = new string(@item.Body.Take(100).ToArray()) + "...";
-                    <tr>
+                    <tr id="@item.BlogId">
                         <td class="text-monospace" style="font-size:0.6rem;">
                             @Html.DisplayFor(modelItem => item.Title)
                         </td>
@@ -97,24 +97,55 @@
         </tbody>
     </table>
 </div>
-<script>
-    window.onload = function () { document.querySelector("#list-of-blogs").selectedIndex = 0; Selection(0);};
 
-    function Selection(selection) {
+@if (@ViewBag.BlogId == null)
+{
+    <script>
+        window.onload = function () { document.querySelector("#list-of-blogs").selectedIndex = 0; Selection(0); };
 
-        if (selection != 0) {
-            //console.log(selection);
-            $("#blog-id-submit-btn").prop('disabled', false);
-            var blogId = $("#list-of-blogs option:selected").val(); // console.log(blogId);
-            $("#blog-id").val(blogId);
-            //console.log("blog-id value is " + $("#blog-id").val());
-            var formaction = $("#blog-id-submit-btn").attr('formaction');
-            formaction += "/" + blogId;
-            $("#blog-id-submit-btn").attr('formaction', formaction);
+        function Selection(selection) {
+
+            if (selection != 0) {
+                //console.log(selection);
+                $("#blog-id-submit-btn").prop('disabled', false);
+                var blogId = $("#list-of-blogs option:selected").val(); // console.log(blogId);
+                $("#blog-id").val(blogId);
+                //console.log("blog-id value is " + $("#blog-id").val());
+
+                //get the block id and create the path for creating a post in that blog
+                var formaction = "/Post/Create/" + blogId;
+                console.log("Form Action: " + formaction);
+                $("#blog-id-submit-btn").attr('formaction', formaction);
+
+                // Just show the the post for the current selected blog
+                $('#blog-posts-list > tbody').children('tr').each(function () {
+
+                    var rowId = $(this).attr('id');
+
+                    if (rowId.length > 0) {
+                        if (rowId != blogId) {
+                            $(this).hide();
+                        }
+                        else if (rowId == blogId) {
+                            $(this).show();
+                        }
+                    }
+                });
+            }
+            else { // List all the posts
+                // console.log(selection);
+                $("#blog-id-submit-btn").prop('disabled', true);
+
+                $('#blog-posts-list > tbody').children('tr').each(function () {
+
+                    var rowId = $(this).attr('id');
+
+                    if (rowId.length > 0) {
+                            $(this).show();
+                    }
+
+                });
+            }
         }
-        else {
-            // console.log(selection);
-            $("#blog-id-submit-btn").prop('disabled', true);
-        }
-    }
-</script>
+    </script>
+}

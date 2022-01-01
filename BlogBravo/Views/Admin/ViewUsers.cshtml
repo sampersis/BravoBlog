@@ -1,0 +1,67 @@
+﻿@model IEnumerable<BlogBravo.Data.ApplicationUser>
+@using BlogBravo.Data
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    Layout = null;
+}
+
+<p>
+    <a class="btn btn-outline-dark" asp-action="Create">Create A New User</a>
+</p>
+<table class="table table-striped" style="font-family:'Tw Cen MT'">
+    <thead>
+        <tr>
+            <th style="font-family:'Tw Cen MT'">
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th style="font-family:'Tw Cen MT'">
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th style="font-family:'Tw Cen MT'">
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th style="font-family:'Tw Cen MT'">
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th style="font-family:'Tw Cen MT'">
+                Role
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            IList<string> UserRole = await SignInManager.UserManager.GetRolesAsync(item);
+            string userRole = UserRole.ElementAt(0);
+
+            <tr>
+                <td style="font-family:'Tw Cen MT'">
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td style="font-family:'Tw Cen MT'">
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td style="font-family:'Tw Cen MT'">
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td style="font-family:'Tw Cen MT'">
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td style="font-family:'Tw Cen MT'">
+                    @userRole
+                </td>
+                <td style="font-family:'Tw Cen MT'">
+                    <div class="btn-group">
+                        <a asp-action="Edit" asp-route-id="@item.Id"><i class=" mr-1 fas fa-edit"></i></a>
+                        <a asp-action="Details" asp-route-id="@item.Id"><i class="mr-1 text-success fas fa-eye"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id"><i class="text-danger fas fa-trash-alt"></i></a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

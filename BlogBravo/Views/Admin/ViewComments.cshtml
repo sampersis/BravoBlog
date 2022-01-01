@@ -1,0 +1,48 @@
+﻿@model IEnumerable<BlogBravo.Models.Comment>
+
+@{
+    Layout = null;
+}
+
+<p>
+    <a class="btn btn-outline-dark" asp-action="Create">Create A New Comment</a>
+</p>
+<table class="table table-striped text-monospace">
+    <thead>
+        <tr>
+            <th style="font-family:'Tw Cen MT'">
+                @Html.DisplayNameFor(model => model.Body)
+            </th>
+            <th style="font-family:'Tw Cen MT'">
+                @Html.DisplayNameFor(model => model.Created)
+            </th>
+            <th style="font-family:'Tw Cen MT'">
+                @Html.DisplayNameFor(model => model.Post)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="font-family:'Tw Cen MT'">
+                    @Html.DisplayFor(modelItem => item.Body)
+                </td>
+                <td style="font-family:'Tw Cen MT'">
+                    @Html.DisplayFor(modelItem => item.Created)
+                </td>
+                <td style="font-family:'Tw Cen MT'">
+                    @Html.DisplayFor(modelItem => item.Post.Body)
+                </td>
+                <td style="font-family:'Tw Cen MT'">
+                    <div class="btn-group">
+                        <a asp-action="Edit" asp-route-id="@item.Id"><i class="mr-1 fas fa-edit"></i></a>
+                        <a asp-action="Details" asp-route-id="@item.Id"><i class="mr-1 text-success fas fa-eye"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id"><i class="text-danger fas fa-trash-alt"></i></a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -75,12 +75,12 @@
                         @Html.DisplayFor(modelItem => item.Body)
                     </td>
                     <td class="text-monospace" style="font-size:0.6rem;">
-                        @Html.DisplayFor(modelItem => item.Created)
+                        @Html.DisplayFor(modelItem => item.Created) on
                     </td>
                     <td class="btn-group text-monospace">
-                        <form id="view-blog-posts" class="btn-group" method="post" asp-controller="Post" asp-action="Index" asp-route-id="@item.Id">
-                            <input type="hidden" id="blogid" name="blogid" value="@ViewBag.BlogId" />
-                            <a href="javascript:$('#view-blog-posts').submit();" title="View Blog's Posts"class="btn btn-outline-primary btn-sm py-0 mr-1 rounded" ><i class="fas fa-list-ol"></i></a>
+                        <form id="@item.Id" class="btn-group" method="post" asp-controller="Post" asp-action="Index" asp-route-id="@item.Id">
+                            <input type="hidden" id="blogid" name="blogid" value="@item.Id" />
+                            <a href="javascript:$('#'+@item.Id).submit();" title="View Blog's Posts"class="btn btn-outline-primary btn-sm py-0 mr-1 rounded" ><i class="fas fa-list-ol"></i></a>
                         </form>
                         <a title="Edit Blog" class="btn btn-outline-success btn-sm py-0 mr-1 rounded" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a>
                         <a title="View Blog" class="btn btn-outline-info btn-sm py-0 mr-1 rounded" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-eye"></i></a>
