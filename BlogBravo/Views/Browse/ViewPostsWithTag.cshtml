@@ -1,0 +1,65 @@
+﻿@model IEnumerable<BlogBravo.Models.Post>
+
+@{
+    Layout = null;
+}
+
+<div id="post-list-view">
+    <table class="table table-striped">
+        <thead class="bg-dark text-white">
+            <tr>
+                <th style="font-family: 'Roboto Mono', monospace;">
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th style="font-family: 'Roboto Mono', monospace;">
+                    @Html.DisplayNameFor(model => model.Body)
+                </th>
+                <th style="font-family: 'Roboto Mono', monospace;">
+                    @Html.DisplayNameFor(model => model.Created)
+                </th>
+                <th style="font-family: 'Roboto Mono', monospace;">
+                    @Html.DisplayNameFor(model => model.Views)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                string bodyStringToView = new string(@item.Body.Take(100).ToArray()) + "...";
+                string postDate = item.Created.ToString("yyyy-MM-dd");
+
+                <tr>
+                    <td style="font-family: 'Roboto Mono', monospace;">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td style="font-family: 'Roboto Mono', monospace;">
+                        @bodyStringToView
+                    </td>
+                    <td style="font-family: 'Roboto Mono', monospace;">
+                        @postDate
+                    </td>
+                    <td style="font-family: 'Roboto Mono', monospace;">
+                        @Html.DisplayFor(modelItem => item.Views)
+                    </td>
+                    <td>
+                        <p id="@item.Id"><i class=" text-dark fas fa-eye" onclick="LoadPost(@item.Id)"></i></p>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="post-view"></div>
+
+<script>
+    function LoadPost(postId) {
+        console.log("Post ID: " + postId);
+
+        $('#post-list-view').slideToggle('slow');
+        $('#tag-list').slideToggle();
+        path = "/Browse/ViewPost/" + postId;
+        $('#post-view').load(path);
+    }
+</script>

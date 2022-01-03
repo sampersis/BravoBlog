@@ -18,5 +18,6 @@ namespace BlogBravo.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public List<Post> EntitySet { get; internal set; }
     }
 }

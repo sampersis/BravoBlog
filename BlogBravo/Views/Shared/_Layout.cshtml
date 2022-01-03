@@ -11,6 +11,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vujahday+Script&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -35,6 +40,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark mr-5" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy  <i class="fas fa-user-secret"></i></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark mr-5" asp-area="" asp-controller="Browse" asp-action="Index">Browse Blog Bravo <i class="fab fa-blogger"></i></a>
                         </li>
                         <li>
                             <form class="form-inline ml-5">
@@ -67,9 +75,9 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    <script>
+    @*<script>
         window.addEventListener('beforeunload'), function () { @{await SignInManager.SignOutAsync();  };
-    </script>
+    </script>*@
 </body>
 </html>
 );

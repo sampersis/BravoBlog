@@ -14,12 +14,12 @@
                 <hr />*@
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Input.Email"><i style="font-size:1rem;" class="ml-1 fas fa-envelope"></i></label>
+                    <label class="btn btn-sm btn-dark text-monospace py-0 ml-1" style="font-size:0.9rem; border-radius:25px;" asp-for="Input.Email"></label>
                     <input placeholder="Enter your email" asp-for="Input.Email" class="form-control" style="border-radius:25px;"/>
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Input.Password"><i style="font-size:1rem;" class="ml-1 fas fa-unlock"></i></label>
+                    <label class="btn btn-sm btn-dark text-monospace py-0 ml-1" style="font-size: 0.9rem; border-radius: 25px;" asp-for="Input.Password"></label>
                     <input placeholder="Enter your passsword" asp-for="Input.Password" class="form-control" style="border-radius:25px;" />
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
@@ -32,7 +32,7 @@
                     </div>
                 </div>*@
                 <div class="form-group">
-                    <button type="submit" class="btn btn-lg btn-dark py-0" style="border-radius:25px;">Log in</button>
+                    <button type="submit" class="btn btn-lg btn-dark py-0 text-monospace" style="border-radius:25px;">Log in</button>
                 </div>
                 @*<div class="form-group">
                     <p>
