@@ -18,8 +18,7 @@ namespace BlogBravo.Models
             this.Tags = new List<Tag>();
         }
 
-        public ApplicationUser Admin { get; set; }
-        
+        public ApplicationUser Admin { get; set; } 
         public List <ApplicationUser> Users { get; set; }
         public List <IdentityRole> Roles { get; set; }
         public List<Blog> Blogs { get; set; }

@@ -91,5 +91,17 @@ namespace BlogBravo.Controllers
             return View(blogData.Tags);
         }
 
+        public ActionResult DeleteTag()
+        {
+            string path = HttpContext.Request.Path.ToString();
+            string[] pathComponent = path.Split('/');
+            int tagId = Convert.ToInt32(pathComponent[pathComponent.Length - 1]);
+            Tag tag =  _context.Tags.Find(tagId);
+            _context.Tags.Remove(tag);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

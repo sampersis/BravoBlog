@@ -8,18 +8,19 @@
 </div>
 
 
-<script>
-    window.onload = function () { $("#load-partial-view").load("/Browse/ViewBlogs"); };
+    <script>
+        window.onload = function () { $("#load-partial-view").load("/Browse/ViewBlogs"); };
 
-    document.querySelector("#blogs-btn").addEventListener('click', function () {
-        $("#load-partial-view").load("/Browse/ViewBlogs");
-    });
+        document.querySelector("#blogs-btn").addEventListener('click', function () {
+            $("#load-partial-view").load("/Browse/ViewBlogs");
+        });
 
-    document.querySelector("#posts-btn").addEventListener('click', function () {
-        $("#load-partial-view").load("/Browse/ViewPosts");
-    });
+        document.querySelector("#posts-btn").addEventListener('click', function () {
+            $("#load-partial-view").load("/Browse/ViewPosts");
+        });
 
-    document.querySelector("#tags-btn").addEventListener('click', function () {
-        $("#load-partial-view").load("/Browse/ViewTags");
-    });
-</script>
+        document.querySelector("#tags-btn").addEventListener('click', function () {
+            $("#load-partial-view").load("/Browse/ViewTags");
+        });
+    </script>
+

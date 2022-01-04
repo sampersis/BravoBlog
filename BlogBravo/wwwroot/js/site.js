@@ -6,18 +6,17 @@
 let tagIndex = 0;
 let tags = [];
 function CreateTag() {
-
     let none = "none";
     let space = ' ';
     let hash = '#';
 
     // Get the value of CheckBox Tag Labels and the value of the Input field
-    var firstTag = document.querySelector("#first-tag").value; console.log("firstTag: " + firstTag);
-    var secondTag = document.querySelector("#second-tag").value; console.log("secondTag: " + secondTag);
-    var thirdTag = document.querySelector("#third-tag").value; console.log("thirdTag: " + thirdTag);
-    var fourthTag = document.querySelector("#fourth-tag").value; console.log("fourthTag: " + fourthTag);
-    var fifthTag = document.querySelector("#fifth-tag").value; console.log("fifthTag: " + fifthTag);
-    var tagStr = document.querySelector("#post-tag").value; console.log("tagStr: " + tagStr);
+    var firstTag = document.querySelector("#first-tag").value; //console.log("firstTag: " + firstTag);
+    var secondTag = document.querySelector("#second-tag").value; // console.log("secondTag: " + secondTag);
+    var thirdTag = document.querySelector("#third-tag").value; // console.log("thirdTag: " + thirdTag);
+    var fourthTag = document.querySelector("#fourth-tag").value; // console.log("fourthTag: " + fourthTag);
+    var fifthTag = document.querySelector("#fifth-tag").value; // console.log("fifthTag: " + fifthTag);
+    var tagStr = document.querySelector("#post-tag").value; // console.log("tagStr: " + tagStr);
 
     // split the value of the input tag field if the words are seperated by space
     var tagString = tagStr.split(space); // console.log("tagString: " + tagString);
@@ -46,35 +45,22 @@ function CreateTag() {
     if (tagStrLen > 0) {
         if (firstTag == none) {
             // console.log("firstTag check: " + firstTag);
-            document.querySelector("#first-tag").value = tagStr; console.log("Inside 1st Tag: " + document.querySelector("#first-tag").value);
-            document.querySelector("#first-tag").hidden = false;
-            document.querySelector("#first-tag-input").hidden = false;
-            document.querySelector("#remove-tag-btn").hidden = false;
-            document.querySelector('#post-tag-count').innerText = 'Count (max. 50): 0';
+            document.querySelector("#first-tag").value = tagStr; // console.log("Inside 1st Tag: " + document.querySelector("#first-tag").value);
         }
         else if (secondTag == none) {
-            document.querySelector("#second-tag").value = tagStr; console.log("Inside 2nd Tag: " + document.querySelector("#second-tag").value);
-            document.querySelector("#second-tag").hidden = false;
-            document.querySelector("#second-tag-input").hidden = false;
-            document.querySelector('#post-tag-count').innerText = 'Count (max. 50): 0';
+            document.querySelector("#second-tag").value = tagStr; // console.log("Inside 2nd Tag: " + document.querySelector("#second-tag").value);
         }
         else if (thirdTag == none) {
-            document.querySelector("#third-tag").value = tagStr; console.log("Inside 3rd Tag: " + document.querySelector("#third-tag").value);
-            document.querySelector("#third-tag").hidden = false;
-            document.querySelector("#third-tag-input").hidden = false;
-            document.querySelector('#post-tag-count').innerText = 'Count (max. 50): 0';
+            document.querySelector("#third-tag").value = tagStr; // console.log("Inside 3rd Tag: " + document.querySelector("#third-tag").value);
         }
         else if (fourthTag == none) {
-            document.querySelector("#fourth-tag").value = tagStr; console.log("Inside 4th Tag: " + document.querySelector("#fourth-tag").value);
-            document.querySelector("#fourth-tag").hidden = false;
-            document.querySelector("#fourth-tag-input").hidden = false;
-            document.querySelector('#post-tag-count').innerText = 'Count (max. 50): 0';
+            document.querySelector("#fourth-tag").value = tagStr; // console.log("Inside 4th Tag: " + document.querySelector("#fourth-tag").value);
         }
         else if (fifthTag == none) {
-            document.querySelector("#fifth-tag").value = tagStr; console.log("Inside 5th Tag: " + document.querySelector("#fifth-tag").value);
-            document.querySelector("#fifth-tag").hidden = false;
-            document.querySelector("#fifth-tag-input").hidden = false;
-            document.querySelector('#post-tag-count').innerText = 'Count (max. 50): 0';
+            document.querySelector("#fifth-tag").value = tagStr; // console.log("Inside 5th Tag: " + document.querySelector("#fifth-tag").value);
+        }
+        else {
+            alert("Max 5 tags per post can be added.");
         }
 
         // Add to the list of existing tags
@@ -90,15 +76,23 @@ function CreateTag() {
     }
 
     $("#tag-list input").each(function () {
+        if ($(this).val() == "check-box") {
 
-        if ($(this).next().val() != none) {
-            console.log("JQ: Tag value: " + $(this).next().val());
-            $(this).show();
-            $(this).next().show();
+            console.log(" This input Value: " + $(this).val());
+            console.log(" This input Value: " + $(this).next().val());
+
+            if ($(this).next().val() != none) {
+                $(this).prop("hidden",false);
+                $(this).next().prop("hidden", false);
+                document.querySelector("#remove-tag-btn").hidden = false;
+            }
         }
     });
 
+
+    document.querySelector('#post-tag-count').innerText = 'Count (max. 20): 0';
     document.querySelector("#post-tag").value = ""; // Reset the input where the tags are created
+
 }
 
 function RemoveTag() {
@@ -125,25 +119,30 @@ function RemoveTag() {
     }
     else if (numberOfChecked > 0) { // Check which tags have been selected
         $("#tag-list input").each(function () {
-
-            if ($(this).is(":checked")) {
-                $(this).hide();
-                $(this).prop('checked', false);
-                $(this).next().hide();
-                $(this).next().val("none");
+            if ($(this).val() == "check-box") {
+                console.log(" This input Value: " + $(this).val());
+                console.log(" This input Value: " + $(this).next().val());
+                if ($(this).is(":checked")) {
+                    $(this).prop("hidden", true);
+                    $(this).prop('checked', false);
+                    $(this).next().prop("hidden", true);
+                    $(this).next().val("none");
+                }
             }
         });
     }
 
     // Find number of deleted tags
     $("#tag-list input").each(function () {
-        if ($(this).next().val() == "none") { numberOfDelete++; }
+        if ($(this).val() == "check-box") {
+            if ($(this).next().val() == "none") { numberOfDelete++; }
+        }
     });
 
     //console.log("numberOfChecked: " + numberOfDelete);
 
     // If number of deleted tags are equal five (max number) then hide the Remove Button as well
     if (numberOfDelete == 5) {
-        $("#remove-tag-btn").hide();
+        $("#remove-tag-btn").prop("hidden", true);
     }
 }
