@@ -1,12 +1,17 @@
 ﻿@model BlogBravo.Models.Post
+@using BlogBravo.Data
+@inject ApplicationDbContext _context
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Post";
+    var blog = _context.Blogs.Find(Model.BlogId);
 }
+
 
 <div class="row alert-dark border border-danger rounded">
     <div class="col-md-12">
-        <h1 class="mb-3">Delete Post - <span class="text-muted fst-italic">Blog Name</span></h1>
+        <h6 class="bg-dark text-white mt-2" style="width:fit-content;">@blog.Title</h6>
+        <h1 class="font-italic">@Model.Title </h1>
         <div class="form-group text-muted">
             <label asp-for="Title" class="control-label fw-bolder h4 mr-5"></label>
             <input asp-for="Title" class="form-control border-dark" maxlength="50" id="post-title" disabled />
@@ -15,16 +20,14 @@
             <label asp-for="Body" class="control-label fw-bold h4"></label>
             <textarea asp-for="Body" maxlength="2500" class="form-control border-dark font-monospace" rows="10" id="post-body" disabled></textarea>
         </div>
-
-        <span class="mr-2 text-muted">#Tag</span><span class="mr-2 text-muted">#Tag</span><span class="mr-2 text-muted">#Tag</span><span class="mr-2 text-muted">#Tag</span><span class="mr-2 text-muted">#Tag</span>
     </div>
 
     <hr />
-    <form class="container my-3">
+    <form class="container my-3" asp-area="" asp-controller="Post" asp-action="Delete">
         <div asp-action="Delete">
             <input type="hidden" asp-for="Id" />
             <input type="submit" value="Delete" class="btn btn-danger" />
-            <button class="btn btn-outline-dark float-right" asp-area="" asp-controller="Home" asp-action="Index">Cancel</button>
+            <button class="btn btn-outline-dark float-right" asp-area="" asp-controller="Post" asp-action="Index">Cancel</button>
         </div>
     </form>
 </div>

@@ -1,55 +1,25 @@
-﻿@model IEnumerable<BlogBravo.Models.Blog>
+<div>
+    <div class="container btn-group btn-group-lg" role="group">
+        <button id="blogs-btn" type="button" class="btn btn-primary" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Blogs</button>
+        <button id="posts-btn" type="button" class="btn btn-primary" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Posts</button>
+        <button id="tags-btn" type="button" class="btn btn-primary" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Tags</button>
+    </div>
+    <div class="container mt-2" id="load-partial-view"></div>
+</div>
 
-@{
-    ViewData["Title"] = "Index";
-}
 
-<h1>Index</h1>
+<script>
+    window.onload = function () { $("#load-partial-view").load("/Browse/ViewBlogs"); };
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<button type ="button">Browse blogs by views</button>
-<button type="button">Browse blogs by tags</button>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Body)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Body)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    document.querySelector("#blogs-btn").addEventListener('click', function () {
+        $("#load-partial-view").load("/Browse/ViewBlogs");
+    });
+
+    document.querySelector("#posts-btn").addEventListener('click', function () {
+        $("#load-partial-view").load("/Browse/ViewPosts");
+    });
+
+    document.querySelector("#tags-btn").addEventListener('click', function () {
+        $("#load-partial-view").load("/Browse/ViewTags");
+    });
+</script>

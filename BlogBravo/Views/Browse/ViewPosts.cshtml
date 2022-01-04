@@ -1,0 +1,53 @@
+﻿@model IEnumerable<BlogBravo.Models.Post>
+
+@{
+    Layout = null;
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th style="font-family: 'Nova Mono', monospace;">
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th style="font-family: 'Nova Mono', monospace;">
+                @Html.DisplayNameFor(model => model.Body)
+            </th>
+            <th style="font-family: 'Nova Mono', monospace;">
+                @Html.DisplayNameFor(model => model.Created)
+            </th>
+            <th style="font-family: 'Nova Mono', monospace;">
+                @Html.DisplayNameFor(model => model.Views)
+            </th>
+            <th style="font-family: 'Nova Mono', monospace;">
+                @Html.DisplayNameFor(model => model.Blog)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="font-family: 'Nova Mono', monospace;">
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td style="font-family: 'Nova Mono', monospace;">
+                    @Html.DisplayFor(modelItem => item.Body)
+                </td>
+                <td style="font-family: 'Nova Mono', monospace;">
+                    @Html.DisplayFor(modelItem => item.Created)
+                </td>
+                <td style="font-family: 'Nova Mono', monospace;">
+                    @Html.DisplayFor(modelItem => item.Views)
+                </td>
+                <td style="font-family: 'Nova Mono', monospace;">
+                    @Html.DisplayFor(modelItem => item.Blog.Body)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id"></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

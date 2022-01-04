@@ -6,43 +6,43 @@
 
 @using BlogBravo.Data; 
 
-<h1>@ViewData["Title"]</h1>
+@*<h1>@ViewData["Title"]</h1>*@
 
-<div class="row">
-    <div class="col-md-4">
+<div class="d-flex justify-content-center">
+    <div class="bg-light border border-dark rounded col-md-6 mt-5 mr-5 float-md-right">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h4>Create a new account.</h4>
-            <hr />
+            @*<h4>Create a new account.</h4>*@
+            @*<hr />*@
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Input.FirstName"></label>
-                <input asp-for="Input.FirstName" class="form-control" />
+                <label class="btn btn-sm btn-dark text-monospace py-0 ml-1" style="font-size: 0.9rem; border-radius: 25px;" asp-for="Input.FirstName"></label>
+                <input asp-for="Input.FirstName" class="form-control" style="border-radius:25px;"/>
                 <span asp-validation-for="Input.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.LastName"></label>
-                <input asp-for="Input.LastName" class="form-control" />
+                <label class="btn btn-sm btn-dark text-monospace py-0 ml-1" style="font-size: 0.9rem; border-radius: 25px;" asp-for="Input.LastName"></label>
+                <input asp-for="Input.LastName" class="form-control" style="border-radius:25px;"/>
                 <span asp-validation-for="Input.LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" />
+                <label class="btn btn-sm btn-dark text-monospace py-0 ml-1" style="font-size: 0.9rem; border-radius: 25px;" asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" class="form-control" style="border-radius:25px;"/>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.Password"></label>
-                <input asp-for="Input.Password" class="form-control" />
+                <label class="btn btn-sm btn-dark text-monospace py-0 ml-1" style="font-size: 0.9rem; border-radius: 25px;" asp-for="Input.Password"></label>
+                <input asp-for="Input.Password" class="form-control" style="border-radius:25px;"/>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.ConfirmPassword"></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" />
+                <label class="btn btn-sm btn-dark text-monospace py-0 ml-1" style="font-size: 0.9rem; border-radius: 25px;" asp-for="Input.ConfirmPassword"></label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" style="border-radius:25px;"/>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="btn btn-lg btn-dark py-0 mb-3 text-monospace" style="border-radius: 25px; border-radius: 25px;">Register</button>
         </form>
     </div>
-    <div class="col-md-6 col-md-offset-2">
+    @*<div class="col-md-6 col-md-offset-2">
         <section>
             <h4>Use another service to register.</h4>
             <hr />
@@ -71,7 +71,7 @@
                 }
             }
         </section>
-    </div>
+    </div>*@
 </div>
 
 @section Scripts {

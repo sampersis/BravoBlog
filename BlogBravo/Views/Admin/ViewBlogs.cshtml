@@ -1,0 +1,54 @@
+﻿@model IEnumerable<BlogBravo.Models.Blog>
+
+@{
+    Layout = null;
+}
+
+@*<p>
+    <a class="btn btn-outline-dark" asp-action="Create">Create A New Blog</a>
+</p>*@
+<table class="table table-striped">
+    <thead class="bg-secondary text-white">
+        <tr>
+            <th style="font-family:'Tw Cen MT'">
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th style="font-family:'Tw Cen MT'">
+                @Html.DisplayNameFor(model => model.Body)
+            </th>
+            <th style="font-family:'Tw Cen MT'">
+                @Html.DisplayNameFor(model => model.Created)
+            </th>
+            <th style="font-family:'Tw Cen MT'">
+                @Html.DisplayNameFor(model => model.Author)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="font-family:'Tw Cen MT'">
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td style="font-family:'Tw Cen MT'">
+                    @Html.DisplayFor(modelItem => item.Body)
+                </td>
+                <td style="font-family:'Tw Cen MT'">
+                    @Html.DisplayFor(modelItem => item.Created)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Author.Id)
+                </td>
+                <td style="font-family:'Tw Cen MT'">
+                    <div class="btn-group">
+                        <a asp-action="Edit" asp-route-id="@item.Id"><i class="mr-1 fas fa-edit"></i></a>
+                        <a asp-action="Details" asp-route-id="@item.Id"><i class="mr-1 text-success fas fa-eye"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id"><i class="text-danger fas fa-trash-alt"></i></a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

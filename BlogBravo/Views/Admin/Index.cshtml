@@ -1,0 +1,67 @@
+﻿<div>
+    <div class="container btn-group btn-group-lg" role="group">
+        <button id="user-btn" type="button" class="btn btn-secondary text-monospace active" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Users</button>
+        <button id="role-btn" type="button" class="btn btn-secondary text-monospace active" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Roles</button>
+        <button id="blogs-btn" type="button" class="btn btn-secondary text-monospace" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Blogs</button>
+        <button id="posts-btn" type="button" class="btn btn-secondary text-monospace" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Posts</button>
+        <button id="comments-btn" type="button" class="btn btn-secondary text-monospace" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Comments</button>
+        <button id="tags-btn" type="button" class="btn btn-secondary text-monospace" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Tags</button>
+    </div>
+    <div class=" container mt-5" id="load-partial-view"></div>
+</div>
+
+
+
+<script>
+    window.onload = function () { $("#load-partial-view").load("/Admin/ViewUsers"); };
+
+    document.querySelector("#user-btn").addEventListener('click', function () {
+        console.log("Users Button Clicked!");
+        $("#load-partial-view").load("/Admin/ViewUsers");
+    });
+
+    document.querySelector("#role-btn").addEventListener('click', function () {
+        console.log("Users Button Clicked!");
+        $("#load-partial-view").load("/Admin/ViewRoles");
+    });
+
+    document.querySelector("#blogs-btn").addEventListener('click', function () {
+        console.log("Blogs Button Clicked!");
+        $("#load-partial-view").load("/Admin/ViewBlogs");
+    });
+
+    document.querySelector("#posts-btn").addEventListener('click', function () {
+        console.log("Posts Button Clicked!");
+        $("#load-partial-view").load("/Admin/ViewPosts");
+    });
+
+    document.querySelector("#comments-btn").addEventListener('click', function () {
+        console.log("Comments Button Clicked!");
+        $("#load-partial-view").load("/Admin/ViewComments");
+    });
+
+    document.querySelector("#tags-btn").addEventListener('click', function () {
+        console.log("Tags Button Clicked!");
+        $("#load-partial-view").load("/Admin/ViewTags");
+    });
+
+    @*function LoadPage(pageToLOad)
+    {
+        alert("LoadPaged called with Parameter " + pageToLOad);
+        if (pageToLOad == "Users") {
+            $("#load-partial-view").load('@Url.Action("ViewUsers","Admin")');
+        }
+        else if (pageToLOad == "Blogs") {
+            $("#load-partial-view").load('@Url.Action("ViewBlogs", "Admin")');
+        }
+        else if (pageToLOad == "Posts") {
+            $("#load-partial-view").load('@Url.Action("ViewPosts","Admin")');
+        }
+        else if (pageToLOad == "Comments") {
+            $("#load-partial-view").load('@Url.Action("ViewComments","Admin")');
+        }
+        else if (pageToLOad == "Tags") {
+            $("#load-partial-view").load('@Url.Action("ViewTags","Admin")');
+        }
+    }*@
+</script>

@@ -1,12 +1,15 @@
 ﻿@model BlogBravo.Models.Post
+@using BlogBravo.Data
+@inject ApplicationDbContext _context
 
 @{
     ViewData["Title"] = "Create";
+            var blog = _context.Blogs.Find(Convert.ToInt32(@ViewBag.CreateBlogId));
 }
 
 <div class="row alert-dark border border-dark rounded">
     <div class="col-md-12">
-        <h1 class="mb-3">Create Post - <span class="text-muted fst-italic">Blog Name</span></h1>
+        <h4 class="bg-dark text-white mt-2 mb-5" style="width:fit-content;">@blog.Title</h4>
         <form asp-area="" asp-controller="Post" asp-action="CreatePost" id="post-form" oninput="(function () {document.querySelector('#create-post-btn').disabled = false; })();return false;">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -21,16 +24,6 @@
                 <span class="alert-dark text-danger float-right" id="post-body-count" style="font-size:0.75rem;">Count (max. 2500): 0</span>
                 <span asp-validation-for="Body" class="text-danger"></span>
             </div>
-            @*<div class="form-group" hidden>
-                <label asp-for="Created" class="control-label"></label>
-                <input asp-for="Created" class="form-control" />
-                <span asp-validation-for="Created" class="text-danger"></span>
-            </div>
-            <div class="form-group" hidden>
-                <label asp-for="Views" class="control-label"></label>
-                <input asp-for="Views" class="form-control" />
-                <span asp-validation-for="Views" class="text-danger"></span>
-            </div>*@
             <div class="form-group">
                 <label class="control-label fw-bold h4"></label>
                 <div class="input-group">
@@ -52,10 +45,10 @@
                     <input id="third-tag" name="third-tag" value="none" class="alert-dark col-md-2 px-0 mr-1" style="border:none;" readonly hidden>
 
                     <input id="fourth-tag-input" type="checkbox" class="form-check-input" hidden />
-                    <input name="fourth-tag" id="fourth-tag" value="none"  class="alert-dark col-md-2 px-0 mr-1" style="border:none;" readonly hidden>
+                    <input name="fourth-tag" id="fourth-tag" value="none" class="alert-dark col-md-2 px-0 mr-1" style="border:none;" readonly hidden>
 
                     <input id="fifth-tag-input" type="checkbox" class="form-check-input" hidden />
-                    <input name="fifth-tag" id="fifth-tag" value="none"  class="alert-dark col-md-2 px-0 mr-1" style="border:none;" readonly hidden>
+                    <input name="fifth-tag" id="fifth-tag" value="none" class="alert-dark col-md-2 px-0 mr-1" style="border:none;" readonly hidden>
 
                     <input type="button" value="Remove Tag" id="remove-tag-btn" class="btn btn-outline-dark btn-sm rounded" style="font-size:.75rem;" onclick="RemoveTag()" hidden />
                 </div>
@@ -68,7 +61,7 @@
             </div>
 
             <div class="form-group">
-                <input id="create-post-btn" type="submit" value="Create Post" class="btn btn-outline-success" disabled />
+                <input id="create-post-btn" type="submit" value="Create Post" class="btn btn-outline-dark" disabled />
                 <a class="btn btn-outline-dark float-right" asp-area="" asp-controller="Post" asp-action="Index">Cancel</a>
             </div>
         </form>

@@ -1,12 +1,16 @@
 ﻿@model BlogBravo.Models.Post
+@using BlogBravo.Data
+@inject ApplicationDbContext _context
 
 @{
     ViewData["Title"] = "Edit";
+    var blog = _context.Blogs.Find(Model.BlogId);
 }
 
 <div class="row alert-dark border border-dark rounded">
     <div class="col-md-12">
-        <h1 class="mb-3">Edit Post - <span class="text-muted fst-italic">Blog Name</span></h1>
+        <h6 class="bg-dark text-white mt-2" style="width:fit-content;">@blog.Title</h6>
+        <h1 class="font-italic">@Model.Title </h1>
         <form asp-area="" asp-controller="Post" asp-action="Edit" id="post-form" oninput="(function () {document.querySelector('#save-changes-btn').disabled = false; })();return false;">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -152,11 +156,11 @@
 
             <div class="form-group" hidden>
                 <label asp-for="BlogId" class="control-label"></label>
-                <input asp-for="BlogId" class="form-control" value="@Model.BlogId"/>
+                <input asp-for="BlogId" class="form-control" value="@Model.BlogId" />
             </div>
             <div class="form-group">
                 <input id="save-changes-btn" type="submit" value="Save Changes" class="btn btn-outline-success" disabled />
-                <a class="btn btn-outline-dark float-right" asp-area="" asp-controller="Home" asp-action="Index">Cancel</a>
+                <a class="btn btn-outline-dark float-right" asp-area="" asp-controller="Post" asp-action="Index">Cancel</a>
             </div>
         </form>
     </div>

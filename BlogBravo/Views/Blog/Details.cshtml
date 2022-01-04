@@ -1,40 +1,59 @@
 ﻿@model BlogBravo.Models.Blog
+@using BlogBravo.Data
+
+@inject ApplicationDbContext _context
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Blog View";
+
+    int totalNumOfPosts = 0;
+    int totalNumberOfViews = 0;
+    var posts = _context.Posts.Where(p => p.BlogId == Model.Id);
+
+    if (posts != null)
+    {
+        totalNumOfPosts = posts.Count();
+        foreach (var post in posts)
+        {
+            totalNumberOfViews += post.Views;
+        }
+    }
 }
 
 
-<div class="container alert-dark border border-dark rounded py-5">
-    <h1>Blog View Page</h1>
+<div class="container alert-dark border border-dark rounded pt-3 pb-5">
+    <h3 class="bg-dark text-white" style="width:fit-content;">@Model.Title</h3>
+    <span class="mr-3"><i class="mr-1 fas fa-user-cog"></i> @Model.Author</span>
+    <span class="mr-3"><i class="mr-1 fas fa-plus-square"> </i>@Model.Created</span>
+    <span class="mr-3"><i class="mr-1 fas fa-mail-bulk"></i>@totalNumOfPosts</span>
+
+    <span class="mr-1"><i class="fas fa-eye"></i> @totalNumberOfViews</span><span id="post-views"></span>
     <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Body)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Body)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Created)
-        </dd>
-        <dt class="col-sm-2" hidden>
-            @Html.DisplayNameFor(model => model.Author)
-        </dt>
-        <dd class="col-sm-10" hidden>
-            @Html.DisplayFor(model => model.Author.Id)
-        </dd>
-    </dl>
-    <a class="btn btn-outline-dark float-right mr-3" asp-area="" asp-controller="Blog" asp-action="Index">Back to Blog List</a>
+    <p>@Model.Body</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Created on</th>
+                <th>Views</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (posts != null)
+            {
+                foreach (var post in posts)
+                {
+                    <tr>
+                        <td>@post.Title</td>
+                        <td>@post.Created</td>
+                        <td>@post.Views</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <a class="btn btn-outline-dark float-right" asp-area="" asp-controller="Blog" asp-action="Index">Back to Blog List</a>
 </div>
 
 

@@ -1,0 +1,36 @@
+﻿@model IEnumerable<BlogBravo.Models.Tag>
+
+@{
+    Layout = null;
+}
+
+<div id="tag-list" class="float-lg-right bg-info mb-2">
+    <select id="list-of-tags" class="form-select" style="font-family: 'Roboto Mono', monospace;" onchange="SelectedTag(this.selectedIndex);">
+        <option valuse="0" selected="selected" style="font-family: 'Roboto Mono', monospace;">Select a Tag</option>
+        @foreach (var tag in Model)
+        {
+            <option value="@tag.Id" id="@tag.Id" style="font-family: 'Roboto Mono', monospace;">@tag.Name</option>
+        }
+    </select>
+</div>
+
+<div id="view-posts-by-a-tag"></div>
+
+<script>
+ /*   window.onload = function () {document.querySelector("#list-of-tags").selectedIndex = 0;} */
+
+    function SelectedTag(selection) {
+        var tagSelected = parseInt(selection); // console.log("Tag Selected: " + tagSelected);
+
+         
+        if (selection > 0) {
+            // Get the tag id and create the path for creating a list of posts using the specific tag
+            var tagId = $("#list-of-tags option:selected").val(); console.log("Tag ID: " + tagId);
+            sessionStorage.setItem('tagId', tagId);
+            var path = "/Browse/ViewPostsWithTag/" + tagId;
+
+            // Just show the list of posts for the current selected tag
+            $('#view-posts-by-a-tag').load(path);
+        }
+    }
+</script>
