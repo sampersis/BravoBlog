@@ -16,8 +16,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;1,100;1,200;1,300;1,400;1,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/blogbravo.css" />
 </head>
 <body>
     @using Microsoft.AspNetCore.Identity
@@ -25,7 +31,7 @@
     @inject SignInManager<ApplicationUser> SignInManager
     @inject UserManager<ApplicationUser> UserManager
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 nav-fill w-100 navbar-text">
             <div class="container">
                 <img src="~/images/bravoicon.png" class="img-thumbnail rounded float-start mr-1" asp-append-version="true" style="width:40px;" />
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BlogBravo</a>
@@ -42,7 +48,7 @@
                             <a class="nav-link text-dark mr-5" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy  <i class="fas fa-user-secret"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark mr-5" asp-area="" asp-controller="Browse" asp-action="Index">Browse Blog Bravo <i class="fab fa-blogger"></i></a>
+                            <a class="nav-link text-dark mr-5" asp-area="" asp-controller="Browse" asp-action="Index">Browse Blogs <i class="fab fa-blogger"></i></a>
                         </li>
                         <li>
                             <form class="form-inline ml-5">

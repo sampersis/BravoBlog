@@ -27,30 +27,30 @@
             <div class="form-group">
                 <label class="control-label fw-bold h4"></label>
                 <div class="input-group">
-                    <input maxlength="20" class="form-control border-dark rounded mr-4" id="post-tag" onkeyup="(function () {document.querySelector('#post-tag-count').innerText = 'Count (max. 50): ' + document.querySelector('#post-tag').value.length; return false; })(); return false;" />
+                    <input maxlength="20" class="form-control border-dark rounded mr-4" id="post-tag" onkeyup="(function () {document.querySelector('#post-tag-count').innerText = 'Count (max. 20): ' + document.querySelector('#post-tag').value.length; return false; })(); return false;" />
                     <div class="input-group-append">
                         <input type="button" value="Create Tag" class="btn btn-outline-dark rounded" onclick="CreateTag()" />
                     </div>
                 </div>
-                <span class="text-danger mb-2 float-right" id="post-tag-count" style="font-size:0.75rem; padding-right: 120px;">Count (max. 20): 0</span>
+                <span class="text-danger mb-2 mr-3 float-right" id="post-tag-count" style="font-size:0.75rem; padding-right: 120px;">Count (max. 20): 0</span>
 
                 <div class="form-group form-check-inline mt-2 mb-2" id="tag-list" style="font-size:0.75rem;">
-                    <input id="first-tag-input" type="checkbox" class="form-check-input" hidden />
-                    <input id="first-tag" name="first-tag" value="none" class="alert-dark col-md-2 px-0 mr-1" style="border:none;" readonly hidden>
+                    <input id="first-tag-input" type="checkbox" value="check-box" class="form-check-input" hidden />
+                    <input id="first-tag" name="first-tag" value="none" class="alert-dark px-0 mr-1" style="border:none;" readonly hidden>
 
-                    <input id="second-tag-input" type="checkbox" class="form-check-input" hidden />
-                    <input id="second-tag" name="second-tag" value="none" class="alert-dark col-md-2 px-0 mr-1" style="border:none;" readonly hidden>
+                    <input id="second-tag-input" type="checkbox" value="check-box" class="form-check-input" hidden />
+                    <input id="second-tag" name="second-tag" value="none" class="alert-dark px-0 mr-1" style="border:none;" readonly hidden>
 
-                    <input id="third-tag-input" type="checkbox" class="form-check-input" hidden />
-                    <input id="third-tag" name="third-tag" value="none" class="alert-dark col-md-2 px-0 mr-1" style="border:none;" readonly hidden>
+                    <input id="third-tag-input" type="checkbox" value="check-box" class="form-check-input" hidden />
+                    <input id="third-tag" name="third-tag" value="none" class="alert-dark px-0 mr-1" style="border:none;" readonly hidden>
 
-                    <input id="fourth-tag-input" type="checkbox" class="form-check-input" hidden />
-                    <input name="fourth-tag" id="fourth-tag" value="none" class="alert-dark col-md-2 px-0 mr-1" style="border:none;" readonly hidden>
+                    <input id="fourth-tag-input" type="checkbox" value="check-box" class="form-check-input" hidden />
+                    <input name="fourth-tag" id="fourth-tag" value="none" class="alert-dark px-0 mr-1" style="border:none;" readonly hidden>
 
-                    <input id="fifth-tag-input" type="checkbox" class="form-check-input" hidden />
-                    <input name="fifth-tag" id="fifth-tag" value="none" class="alert-dark col-md-2 px-0 mr-1" style="border:none;" readonly hidden>
+                    <input id="fifth-tag-input" type="checkbox" value="check-box" class="form-check-input" hidden />
+                    <input name="fifth-tag" id="fifth-tag" value="none" class="alert-dark px-0 mr-1" style="border:none;" readonly hidden>
 
-                    <input type="button" value="Remove Tag" id="remove-tag-btn" class="btn btn-outline-dark btn-sm rounded" style="font-size:.75rem;" onclick="RemoveTag()" hidden />
+                    <input type="button" value="Remove Tag" id="remove-tag-btn" class="btn btn-outline-dark btn-sm rounded ml-3" style="font-size:.75rem;" onclick="RemoveTag()" hidden />
                 </div>
             </div>
             <hr />
