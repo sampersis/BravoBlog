@@ -6,10 +6,10 @@
 
 <div id="tag-list" class="float-lg-right bg-info mb-2">
     <select id="list-of-tags" class="form-select" style="font-family: 'Roboto Mono', monospace;" onchange="SelectedTag(this.selectedIndex);">
-        <option valuse="0" selected="selected">Select a Tag</option>
+        <option valuse="0" selected="selected" style="font-family: 'Roboto Mono', monospace;">Select a Tag</option>
         @foreach (var tag in Model)
         {
-            <option value="@tag.Id" id="@tag.Id">@tag.Name</option>
+            <option value="@tag.Id" id="@tag.Id" style="font-family: 'Roboto Mono', monospace;">@tag.Name</option>
         }
     </select>
 </div>

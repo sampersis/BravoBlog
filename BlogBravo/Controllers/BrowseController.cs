@@ -47,17 +47,33 @@ namespace BlogBravo.Controllers
 
         public ActionResult ViewPostsWithTag()
         {
-            // List<Post> posts = _context.Posts.Where(p => p.Tag. == tagId).ToList();
-
             string path = HttpContext.Request.Path;
             string[] pathComponents = path.Split('/');
             int tagId = Convert.ToInt32(pathComponents[pathComponents.Length - 1]);
+            List<Post> postsThatUsesTheTag = new List<Post>();
 
             if (tagId > 0)
             {
-                //List<Post> posts = _context.EntitySet
-                List<Post> Posts = _context.Posts.ToList();
-                return View(Posts);
+                List<Post> Posts = _context.Posts.Include(p => p.Tag).ToList();
+
+                if (Posts.Count != 0 )
+                {
+                    foreach(Post post in Posts)
+                    {
+                        if (post.Tag.Count > 0)
+                        {
+                            foreach (Tag tag in post.Tag)
+                            {
+                                if (tag.Id == tagId)
+                                {
+                                    postsThatUsesTheTag.Add(post);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return View(postsThatUsesTheTag);
             }
 
             return View();
