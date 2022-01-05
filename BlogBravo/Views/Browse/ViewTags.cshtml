@@ -9,7 +9,7 @@
         <option valuse="0" selected="selected" style="font-family: 'Roboto Mono', monospace;">Select a Tag</option>
         @foreach (var tag in Model)
         {
-            <option value="@tag.Id" id="@tag.Id" style="font-family: 'Roboto Mono', monospace;">@tag.Name</option>
+            <option value="@tag.Id" id="@tag.Id" style="font-family: 'Roboto Mono', monospace;">@tag.Name (@tag.Post.Count posts)</option>
         }
     </select>
 </div>

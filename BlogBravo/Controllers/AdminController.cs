@@ -86,7 +86,8 @@ namespace BlogBravo.Controllers
 
         public ActionResult ViewTags()
         {
-            blogData.Tags = _context.Tags.ToList();
+            blogData.Tags = _context.Tags.Include(t => t.Post).ToList();
+            blogData.Tags = blogData.Tags.OrderByDescending(t => t.Post.Count).ToList();
 
             return View(blogData.Tags);
         }

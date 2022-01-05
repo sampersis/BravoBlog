@@ -34,13 +34,14 @@ namespace BlogBravo.Controllers
 
         public ActionResult ViewPosts()
         {
-            List<Post> Posts = _context.Posts.ToList();
+            List<Post> Posts = _context.Posts.OrderBy(p => p.Title).OrderBy(p=>p.BlogId).ToList();
             return View(Posts);
         }
 
         public ActionResult ViewTags()
         {
-            List<Tag> Tags = _context.Tags.ToList();
+            List<Tag> Tags = _context.Tags.Include(t => t.Post).ToList();
+            Tags = Tags.OrderByDescending(t => t.Post.Count).ToList();
 
             return View(Tags);
         }
