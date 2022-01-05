@@ -1,47 +1,99 @@
 ﻿@model IEnumerable<BlogBravo.Models.Blog>
+@using BlogBravo.Data
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext _context
+
 
 @{
     Layout = null;
+
+    List<string[]> blogList = new List<string[]>();
+
+    @foreach (var item in Model)
+    {
+        int totalNumOfPosts = 0;
+
+        ApplicationUser user = await UserManager.FindByIdAsync(item.AuthorId);
+
+
+        var posts = _context.Posts.Where(p => p.BlogId == item.Id);
+
+        if (posts != null)
+        {
+            foreach (var post in posts)
+            {
+                totalNumOfPosts += post.Views;
+
+            }
+        }
+
+        if (totalNumOfPosts < 10 && totalNumOfPosts != 0)
+        {
+            blogList.Add(new string[] { "0"+totalNumOfPosts.ToString(),
+                item.Title, item.Created.ToString("yyyy-MM-dd"),
+                user.FirstName + " " + user.LastName,item.Id.ToString()});
+        }
+        else
+                {
+                    blogList.Add(new string[] { totalNumOfPosts.ToString(),
+                item.Title, item.Created.ToString("yyyy-MM-dd"),
+                user.FirstName + " " + user.LastName, item.Id.ToString()});
+                }
+
+
+    }
+
+
+
+    blogList = blogList.OrderByDescending(b => b.ElementAt(0)).ToList();
+    
+
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Body)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <table class="table table-striped text-monospace">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Body)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Created)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Author.Id)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">View All Posts</a>
-                </td>
+                <th>
+                    Views
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Created)
+                </th>
+                <th>
+                    Author
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+
+            @foreach (var item in blogList)
+            {
+                
+                <tr>
+                    <td>
+                        @item.ElementAt(0)
+                    </td>
+                    <td>
+                        @item.ElementAt(1)
+
+                    </td>
+
+                    <td>
+                        @item.ElementAt(2)
+                    </td>
+                    <td>
+                        @item.ElementAt(3)
+                    </td>
+                    <td>
+                        <a asp-controller="Browse" asp-action="ViewBlogPost" asp-route-id="@Convert.ToInt32(@item.ElementAt(4))"><i class="text-dark fas fa-list-alt" style="font-size:2rem;"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

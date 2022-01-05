@@ -98,6 +98,23 @@ namespace BlogBravo.Controllers
             return View();
         }
 
+        public ActionResult ViewBlogPost()
+        {
+             string path = HttpContext.Request.Path;
+            string[] pathComponents = path.Split('/');
+            int BlogId = Convert.ToInt32(pathComponents[pathComponents.Length - 1]);
+
+            if (BlogId > 0)
+            {
+                var Post = _context.Posts.Where(p => p.BlogId == BlogId);
+                var blog = _context.Blogs.Find(BlogId);
+                ViewBag.BlogName = blog.Title;  
+                return View(Post);
+            }
+
+            return View();
+        }
+
         // ------------------------------------ MIcrosoft Code --------------------------- //
         // GET: Browse/Details/5
         public ActionResult Details(int id)
