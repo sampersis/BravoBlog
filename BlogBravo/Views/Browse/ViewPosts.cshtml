@@ -1,53 +1,118 @@
 ﻿@model IEnumerable<BlogBravo.Models.Post>
+@using BlogBravo.Data
+@inject ApplicationDbContext blogbravodb
 
 @{
     Layout = null;
 }
 
-<table class="table">
+<style>
+    button:hover {background-color:white; color:black;}
+    tr:hover  {background-color:black; color:white;}
+
+    td {
+        overflow:hidden;
+        max-height: 3rem;
+        font-family: 'Nova Mono', monospace;
+    }
+    th {
+        font-family: 'Nova Mono', monospace;
+    }
+</style>
+
+<table class="table border border-dark rounded">
     <thead>
         <tr>
-            <th style="font-family: 'Nova Mono', monospace;">
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th style="font-family: 'Nova Mono', monospace;">
-                @Html.DisplayNameFor(model => model.Body)
-            </th>
-            <th style="font-family: 'Nova Mono', monospace;">
-                @Html.DisplayNameFor(model => model.Created)
-            </th>
-            <th style="font-family: 'Nova Mono', monospace;">
-                @Html.DisplayNameFor(model => model.Views)
-            </th>
-            <th style="font-family: 'Nova Mono', monospace;">
+            <th>
                 @Html.DisplayNameFor(model => model.Blog)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Body)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Created)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Views)
+            </th>
+            <th>
+                Expand/Collaps
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td style="font-family: 'Nova Mono', monospace;">
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td style="font-family: 'Nova Mono', monospace;">
-                    @Html.DisplayFor(modelItem => item.Body)
-                </td>
-                <td style="font-family: 'Nova Mono', monospace;">
-                    @Html.DisplayFor(modelItem => item.Created)
-                </td>
-                <td style="font-family: 'Nova Mono', monospace;">
-                    @Html.DisplayFor(modelItem => item.Views)
-                </td>
-                <td style="font-family: 'Nova Mono', monospace;">
-                    @Html.DisplayFor(modelItem => item.Blog.Body)
+            Blog blog = blogbravodb.Blogs.FirstOrDefault(b => b.Id == item.BlogId);
+            string DOC = item.Created.ToString("yyyy-MM-dd");
+            string postBody = item.Body.Substring(0, 100) + " ...";
+            string fullPostBody = item.Body;
+
+            <tr id="@item.Id">
+                <td>
+                    @blog.Title
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id"></a>
+                    @item.Title
+                </td>
+                <td id="post-body">
+                    @postBody
+                </td>
+                <td id="post-full-body" hidden>
+                    @fullPostBody
+                </td>
+                <td>
+                    @DOC
+                </td>
+                <td>
+                    @item.Views
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <button id="@item.Id" type="button" class="expand btn btn-outline-dark py-0 text-black"><i class="fas fa-expand-arrows-alt" style="font-size:1.5rem;"></i></button>
+                        <button id="@item.Id" type="button" class="collaps btn btn-outline-dark py-0 text-black"><i class="fas fa-compress-arrows-alt" style="font-size:1.5rem;"></i></button>
+                    </div>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<script>
+    $('.expand').click(function () {
+        var id = $(this).attr('id');
+        //find the <tr> with corresponding id and set the hidden attribute for the <tr> that contains the body of the post
+        $("tbody").children().each(function () {
+            var trId = $(this).attr('id');
+            if (trId == id) {
+                $(this).children().each(function () {
+                    var tdId = $(this).attr('id');
+                    if (tdId == "post-body") {
+                        $(this).prop('hidden',true);
+                        $(this).next().prop('hidden',false);
+                    }
+                });
+            }
+        });
+    });
+
+    $('.collaps').click(function () {
+        var id = $(this).attr('id');
+        //find the <tr> with corresponding id and set the hidden attribute for the <tr> that contains the body of the post
+        $("tbody").children().each(function () {
+            var trId = $(this).attr('id');
+            if (trId == id) {
+                $(this).children().each(function () {
+                    var tdId = $(this).attr('id');
+                    if (tdId == "post-body") {
+                        $(this).prop('hidden', false);
+                        $(this).next().prop('hidden', true);
+                    }
+                });
+            }
+        });
+    });
+</script>
