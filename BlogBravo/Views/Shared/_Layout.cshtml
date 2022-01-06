@@ -31,10 +31,10 @@
     @inject SignInManager<ApplicationUser> SignInManager
     @inject UserManager<ApplicationUser> UserManager
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 nav-fill w-100 navbar-text">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow">
             <div class="container">
-                <img src="~/images/bravoicon.png" class="img-thumbnail rounded float-start mr-1" asp-append-version="true" style="width:40px;" />
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BlogBravo</a>
+                @*<img src="~/images/bravoicon.png" class="img-thumbnail rounded float-start mr-1" asp-append-version="true" style="width:40px;" />*@
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-family:'Edwardian Script ITC'; font-size:2rem;">Blog Bravo <i class="fas fa-edit"></i></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -42,20 +42,20 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home  <i class="fas fa-home"></i></a>
+                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home  <i class="fas fa-home"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark mr-5" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy  <i class="fas fa-user-secret"></i></a>
+                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy  <i class="fas fa-user-secret"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark mr-5" asp-area="" asp-controller="Browse" asp-action="Index">Browse Blogs <i class="fab fa-blogger"></i></a>
+                            <a class="nav-link text-white mr-2" asp-area="" asp-controller="Browse" asp-action="Index">Browse Blogs <i class="fab fa-blogger"></i></a>
                         </li>
                         <li>
-                            <form class="form-inline ml-5">
+                            <form class="form-inline">
                                 <div class="input-group">
-                                    <input type="search" placeholder="Search..." class="form-control border border-right-0 border-dark">
+                                    <input type="search" placeholder="Search..." class="form-control border border-right-0 border-dark" style="border-top-left-radius:25px; border-bottom-left-radius:25px;">
                                     <div class="input-group-append">
-                                        <span class="btn btn-outline-dark border-left-0"><i class="fas fa-search"></i></span>
+                                        <span class="btn btn-outline-dark border-left-0 bg-white" style="border-top-right-radius: 25px; border-bottom-right-radius: 25px;"><i class="text-black fas fa-search"></i></span>
                                     </div>
                                 </div>
                             </form>
@@ -72,18 +72,15 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted" style="font-size:1rem;">
+    <footer class="border-top footer bg-dark text-white" style="font-size:1rem;">
         <div class="container">
-            &copy; @DateTime.Now.Year - Blog Bravo <i class="fab fa-linkedin"></i> <i class="fab fa-twitter-square"></i> <i class="fab fa-facebook-square"></i> - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+            &copy; @DateTime.Now.Year - Blog Bravo <i class="fab fa-linkedin"></i> <i class="fab fa-twitter-square"></i> <i class="fab fa-facebook-square"></i> - <a class="text-info" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    @*<script>
-        window.addEventListener('beforeunload'), function () { @{await SignInManager.SignOutAsync();  };
-    </script>*@
 </body>
 </html>
 );

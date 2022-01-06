@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<BlogBravo.Models.Post>
+@using System
 @using BlogBravo.Data
 @inject ApplicationDbContext blogbravodb
 
@@ -48,7 +49,17 @@
         {
             Blog blog = blogbravodb.Blogs.FirstOrDefault(b => b.Id == item.BlogId);
             string DOC = item.Created.ToString("yyyy-MM-dd");
-            string postBody = item.Body.Substring(0, 100) + " ...";
+            string postBody = "";
+
+            if (item.Body.Length < 100)
+            {
+                postBody = item.Body.Substring(0, item.Body.Length) ;
+            }
+            else
+            {
+                postBody = item.Body.Substring(0, 100) + " ...";
+            }
+
             string fullPostBody = item.Body;
 
             <tr id="@item.Id">
@@ -72,8 +83,8 @@
                 </td>
                 <td>
                     <div class="btn-group">
-                        <button id="@item.Id" type="button" class="expand btn btn-outline-dark py-0 text-black"><i class="fas fa-expand-arrows-alt" style="font-size:1.5rem;"></i></button>
-                        <button id="@item.Id" type="button" class="collaps btn btn-outline-dark py-0 text-black"><i class="fas fa-compress-arrows-alt" style="font-size:1.5rem;"></i></button>
+                        <button id="@item.Id" type="button" class="expand btn btn-outline-dark py-0 text-black"><i class="fas fa-chevron-down" style="font-size:1.5rem;"></i></button>
+                        <button id="@item.Id" type="button" class="collaps btn btn-outline-dark py-0 text-black"><i class="fas fa-chevron-up" style="font-size:1.5rem;"></i></button>
                     </div>
                 </td>
             </tr>

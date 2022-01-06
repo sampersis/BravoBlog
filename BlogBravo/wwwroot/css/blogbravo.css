@@ -1,8 +1,9 @@
 ﻿/* ------- Added by Sam 2021-01-04 --------*/
 
 * {
-/*    font-family: 'Montserrat', sans-serif;*/
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Montserrat', 'Open Sans', sans-serif;
+    font-size: 0.9rem;
+    /*    font-family: 'Open Sans', sans-serif;*/
     /* font-family: 'Ink Free'*/
 }
 
