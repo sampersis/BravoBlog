@@ -34,7 +34,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow">
             <div class="container">
                 @*<img src="~/images/bravoicon.png" class="img-thumbnail rounded float-start mr-1" asp-append-version="true" style="width:40px;" />*@
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-family:'Edwardian Script ITC'; font-size:2rem;">Blog Bravo <i class="fas fa-edit"></i></a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-family:'Edwardian Script ITC'; font-size:2rem;">Blog Bravo <i class="fas fa-edit"style="font-size:1.5rem;"></i></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -83,4 +83,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-);

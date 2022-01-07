@@ -99,7 +99,65 @@ namespace BlogBravo.Controllers
             return View();
         }
 
-        public ActionResult ViewBlogPost()
+        public ActionResult Views()
+        {
+            string path = HttpContext.Request.Path;
+            string[] pathComponents = path.Split('/');
+            int BlogId = Convert.ToInt32(pathComponents[pathComponents.Length - 1]);
+
+            if (BlogId > 0)
+            {
+                Blog blog = _context.Blogs.Find(BlogId);
+                var Posts = _context.Posts.Where(p => p.BlogId == BlogId).OrderBy(p=> p.Created);
+                ViewBag.BlogPosts = Posts;
+
+                string[] postDates = new string [Posts.Count()];
+
+                int i = 0;
+                foreach(var post in Posts)
+                {
+                    if (post != null)
+                    {
+                        postDates[i] = post.Created.ToString("yyyy-MMMM-dd");
+                        i++;
+                    }
+                }
+
+                Array.Sort(postDates);
+
+                List<string> years = new List<string>();
+                List<string> months = new List<string>();
+                string[] componentsOfpostDates = new string[3];
+
+                foreach (string postDate in postDates)
+                {
+                    componentsOfpostDates = postDate.Split('-');
+                    years.Add(componentsOfpostDates[0]);
+                }
+
+                ViewBag.postYears = years = years.OrderBy(y => y.ElementAt(0)).Distinct().ToList();
+                foreach(var year in years)
+                {
+                    for (i = 0; i < postDates.Length; i++)
+                    {
+                        componentsOfpostDates = postDates[i].Split('-');
+                        if (String.Equals(year, componentsOfpostDates[0]))
+                        {
+                            months.Add(componentsOfpostDates[1]);
+                        }
+                    }
+
+                    TempData[year] = months.OrderBy(m => m.ElementAt(0)).Distinct().ToList();
+                    months.Clear();
+                }
+                
+                return View(blog);
+            }
+
+            return View();
+        }
+
+            public ActionResult ViewBlogPost()
         {
              string path = HttpContext.Request.Path;
             string[] pathComponents = path.Split('/');
