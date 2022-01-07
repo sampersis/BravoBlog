@@ -1,0 +1,54 @@
+﻿@model BlogBravo.Models.Blog
+
+@{ 
+    var blogPosts = ViewBag.BlogPosts;
+}
+
+<div class="container-fluid col-lg-12 mt-2">
+    <div class="row">
+        <div id="post-list" class="float-left col-lg-8 mr-5">
+
+            @if (blogPosts != null)
+            {
+                foreach (var post in blogPosts)
+                {
+            <div class="my-2" style="background-color:#ccc; height:fit-content; border:solid 3px black; border-radius:10px;">
+                <div class="bg-dark text-center text-white py-4 px-2 rounded">
+                    <h2>@post.Title</h2>
+                    <p class="float-right pb-2" style="font-size:0.75rem;"><i class="mr-1 fas fa-plus-square"></i> @post.Created.ToString("yyyy-MMMM-dd") <span class="mx-3"></span> <i class="mr-1 far fa-eye"></i> @post.Views</p>
+                </div>
+                <p class="p-2">@post.Body</p>
+            </div>
+                }
+            }
+        </div>
+
+        <div id="blog-data" class="float-right col-lg-3" style="border: solid 3px black; border-radius: 10px; height: fit-content; background-color: #ccc; ">
+            <h1 class="bg-dark text-white my-2 p-2" style="border:solid 2px black; border-radius:10px; width:fit-content; margin:0 auto;">@Model.Title</h1>
+            <h6 class="p-2 mb-2" style="border: solid 2px black; border-radius: 10px; width: fit-content; margin: 0 auto;">@Model.Body</h6>
+
+            <div class="d-flex flex-column justify-content-center my-2">
+                @if (ViewBag.postYears != null)
+                {
+                    foreach (var year in ViewBag.postYears)
+                    {
+                        <div style="margin: 0 auto;">
+                            <select>
+                                <option selected="selected">Year @year</option>
+                                @if (TempData[year] != null)
+                                {
+                                    foreach (var month in TempData[year])
+                                    {
+                                        <option>@month</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    }
+                }
+            </div>
+
+            </div>
+    </div>
+</div>
+
