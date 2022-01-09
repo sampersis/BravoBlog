@@ -7,22 +7,58 @@
     Layout = null;
 }
 
-<p>
-    <a class="btn btn-secondary" asp-action="Create">Create A New Role</a>
-</p>
+        @if (@ViewBag.Error != null)
+        {
+            <p id="error-message">@ViewBag.Error</p>
+        }
+
+        @if (@ViewBag.RoleStrEmpty != null)
+        {
+            <p id="error-message">@ViewBag.Error</p>
+        }
+
+<style>
+    * {
+        font-family: 'Tw Cen MT';
+    }
+</style>
+
+<div id="create-role"class="container-fluid border border-dark rounded mb-3" style="padding:20px; background-color:lightgrey" hidden>
+    <form id="create-role-form" method="post">
+        <div class="form-group row">
+            <div class="col-2">
+                <label class="control-label text-white" style="font-size:1.5rem;">Role Name</label>
+            </div>
+            <div class="col-5">
+                <input id="role" type="text" name="role" class="form-control" required/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <input id="create-role" type="submit" class="btn btn-secondary" value="Create Role" asp-controller="Admin" asp-action="CreateRole"/>
+            </div>
+            <div class="col-2">
+                <a id="cancel" href="#" class="btn btn-secondary float-right">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<button id="create-a-new-role" class="btn btn-secondary mb-3">Create A New Role</button>
+
 <table class="table table-striped" style="font-family:'Tw Cen MT'">
     <thead class="bg-secondary text-white">
         <tr>
-            <th style="font-family:'Tw Cen MT'">
+            <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
-            <th style="font-family:'Tw Cen MT'">
+            <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th style="font-family:'Tw Cen MT'">
+            <th>
                 @Html.DisplayNameFor(model => model.NormalizedName)
             </th>
-            <th style="font-family:'Tw Cen MT'">
+            <th hidden>
                 @Html.DisplayNameFor(model => model.ConcurrencyStamp)
             </th>
             <th></th>
@@ -32,26 +68,43 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td style="font-family:'Tw Cen MT'">
+                <td>
                     @Html.DisplayFor(modelItem => item.Id)
                 </td>
-                <td style="font-family:'Tw Cen MT'">
+                <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                <td style="font-family:'Tw Cen MT'">
+                <td>
                     @Html.DisplayFor(modelItem => item.NormalizedName)
                 </td>
-                <td style="font-family:'Tw Cen MT'">
+                <td hidden>
                     @Html.DisplayFor(modelItem => item.ConcurrencyStamp)
                 </td>
                 <td style="font-family:'Tw Cen MT'">
                     <div class="btn-group">
-                        <a asp-action="Edit" asp-route-id="@item.Id"><i class=" mr-1 fas fa-edit"></i></a>
-                        <a asp-action="Details" asp-route-id="@item.Id"><i class="mr-1 text-success fas fa-eye"></i></a>
-                        <a asp-action="Delete" asp-route-id="@item.Id"><i class="text-danger fas fa-trash-alt"></i></a>
+                        <a asp-action="EditRole" asp-route-id="@item.Id"><i class=" mr-1 fas fa-edit"></i></a>
+                        <a asp-action="ViewRole" asp-route-id="@item.Id"><i class="mr-1 text-success fas fa-eye"></i></a>
+                        <a asp-action="DeleteRole" asp-route-id="@item.Id"><i class="text-danger fas fa-trash-alt"></i></a>
                     </div>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<script>
+    $("#create-a-new-role").click(function () {
+        $("#role").text("");
+        $("#create-role").prop('hidden', false);
+        $("#create-a-new-role").hide();
+        $("#error-message").hide();
+    });
+
+    $("#cancel").click(function () {
+        $("#role").text("");
+        $("#create-role").prop('hidden', true);
+        $("#create-a-new-role").show();
+        $("#error-message").hide();
+    });
+
+</script>

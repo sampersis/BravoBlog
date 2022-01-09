@@ -64,6 +64,101 @@ namespace BlogBravo.Controllers
 
             return View(blogData.Roles);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRole()
+        {
+            string role = Request.Form["role"];
+
+            if (!String.IsNullOrEmpty(role))
+            {
+                var _role = await _roleManager.RoleExistsAsync(role);
+
+                if (!_role)
+                {
+                    var RoleCreationStatus = await _roleManager.CreateAsync(new IdentityRole { Name = role });
+
+                    if (RoleCreationStatus.Succeeded)
+                    {
+                        _logger.LogInformation("Role {0} created successfully: {1}", role, RoleCreationStatus.Succeeded);
+                    }
+                    else
+                    {
+                        _logger.LogInformation("Failed to create role {0}: {1}", role, RoleCreationStatus.Errors);
+                    }
+                }
+                else
+                {
+                    ViewBag.Error = role + " already Exists";
+                }
+            }
+            else
+            {
+                ViewBag.RoleStrEmpty = "Cannot create role based on an empty role string";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult ViewRole()
+        {
+            string path = HttpContext.Request.Path;
+            string[] pathComponents = path.Split('/');
+            string roleId = pathComponents[pathComponents.Length - 1];
+
+            if(!String.IsNullOrEmpty(roleId))
+            {
+                var role = _roleManager.Roles.FirstOrDefault(r => r.Id == roleId);
+                return View(role);
+            }
+
+            return NotFound();
+        }
+
+        public ActionResult DeleteRole()
+        {
+            string path = HttpContext.Request.Path;
+            string[] pathComponents = path.Split('/');
+            string roleId = pathComponents[pathComponents.Length - 1];
+
+            if (!String.IsNullOrEmpty(roleId))
+            {
+                var role = _roleManager.Roles.FirstOrDefault(r => r.Id == roleId);
+                return View(role);
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost, ActionName("DeleteRole")]
+        public async Task<IActionResult> DeleteRoleConfirmed(string? roleId)
+        {
+
+            if (!String.IsNullOrEmpty(roleId))
+            {
+                var role = _roleManager.Roles.FirstOrDefault(r => r.Id == roleId);
+                if (role != null)
+                {
+                    var roleDeletion = await _roleManager.DeleteAsync(role);
+
+                    if (roleDeletion.Succeeded)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+
         public ActionResult ViewBlogs()
         {
             blogData.Blogs = _context.Blogs.ToList();

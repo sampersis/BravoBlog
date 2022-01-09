@@ -1,0 +1,25 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityRole
+
+@{
+    ViewData["Title"] = "DeleteRole";
+}
+
+<style>
+    * {
+        font-family: 'Tw Cen MT';
+    }
+</style>
+
+<div class="container border border-danger rounded mt-3" style=" background-color:lightgrey; padding: 20px; padding-bottom:50px;">
+    <h1 class="text-danger mb-3">Do you really want to remove role<span class="display-4" style="font-weight:bold;"> @Model.Name</span>?</h1>
+
+    <div class="container mb-2">
+            <form method="post">
+                <input type="text" name="roleId" value="@Model.Id" hidden />
+                <input type="submit" value="Delete Role @Model.Name" class="btn btn-danger rounded float-left" asp-controller="Admin" asp-action="DeleteRole" />
+            </form>
+            <button class="btn btn-dark rounded float-right" asp-area="" asp-controller="Admin" asp-action="Index">Back to the Role List</button>
+    </div>
+</div>
+
+

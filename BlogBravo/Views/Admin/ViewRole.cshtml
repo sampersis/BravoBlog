@@ -1,0 +1,51 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityRole
+
+@using Microsoft.AspNetCore.Identity
+@using BlogBravo.Data
+@using System.Web;
+
+@inject UserManager<ApplicationUser> UserManager
+
+@{ 
+    var users = await UserManager.GetUsersInRoleAsync(Model.Name);
+    int usersWithRole = 0;
+    List<string> userNames = new List<string>();
+
+    if(users != null)
+    {
+        usersWithRole = users.Count;
+
+        foreach (var user in users)
+        {
+            userNames.Add(new (user.FirstName + " " + user.LastName + " with username: " + user.UserName + "(" + user.Id + ") "));
+        }
+    }
+}
+
+<div class="container-fluid border border-dark rounded mt-3" style="background-color:lightgrey; padding: 20px; padding-bottom: 50px;">
+    <h1 class="bg-dark text-white rounded" style="width: fit-content">@Model.Name</h1>
+    <div>
+        <p style="font-weight:bold;">Role Id</p>
+        <p style="background-color:lightgrey" readonly>@Model.Id</p>
+    </div>
+    <div>
+        <p style="font-weight:bold;">Normalized Name</p>
+        <p type="text" style="background-color:lightgrey" readonly>@Model.NormalizedName</p>
+    </div>
+    <div>
+        <p style="font-weight:bold;">Concurrency Stamp</p>
+        <p style="background-color:lightgrey" readonly>@Model.ConcurrencyStamp</p>
+    </div>
+    <div class="mb-5">
+        <p style="background-color:lightgrey" readonly>No. of Users: @usersWithRole</p>
+        @if (userNames.Count > 0)
+        {   <ol>
+            @foreach (string user in userNames)
+                {<li class="">@user</li>}
+            </ol>
+        }
+    </div>
+    <div class="container mb-2">
+        <a class="btn btn-dark rounded float-right" asp-area="" asp-controller="Admin" asp-action="Index">Back to the Role List</a>
+    </div>
+</div>
