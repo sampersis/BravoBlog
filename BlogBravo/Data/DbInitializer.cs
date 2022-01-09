@@ -23,8 +23,7 @@ namespace BlogBravo.Data
         {
             _db = context;
             _userManager = userManager;
-            _roleManager = roleManager;
-            
+            _roleManager = roleManager;            
         }
 
         public async Task InitializeAsync()
