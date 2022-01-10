@@ -100,7 +100,7 @@ namespace BlogBravo.Controllers
                 return NotFound();
             }
 
-            string blogId = Request.Form["blog-id"];
+            //string blogId = Request.Form["blog-id"];
             string commentUserName = Request.Form["post-comment-user"];
 
             var post = await _context.Posts.Include(p => p.Comment).FirstOrDefaultAsync(p => p.Id == id);

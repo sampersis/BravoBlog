@@ -44,12 +44,13 @@ namespace BlogBravo.Controllers
              blogData = new BlogData();
         }
 
-        // GET: AdminController
+        // First Page for Admin Pages
         public ActionResult Index()
         {
             return View();
         }
 
+        // Partial Requests that results in partial views to be loaded in the first page
         public ActionResult ViewUsers()
         {
             blogData.Users = _userManager.Users.ToList();
@@ -57,7 +58,6 @@ namespace BlogBravo.Controllers
             return View(blogData.Users);
         }
         
-
         public ActionResult ViewRoles()
         {
             blogData.Roles = _roleManager.Roles.ToList();
@@ -65,6 +65,35 @@ namespace BlogBravo.Controllers
             return View(blogData.Roles);
         }
 
+        public ActionResult ViewBlogs()
+        {
+            blogData.Blogs = _context.Blogs.ToList();
+
+            return View(blogData.Blogs);
+        }
+
+        public ActionResult ViewPosts()
+        {
+            blogData.Posts = _context.Posts.ToList();
+            return View(blogData.Posts);
+        }
+
+        public ActionResult ViewComments()
+        {
+            blogData.Comments = _context.Comments.ToList();
+
+            return View(blogData.Comments);
+        }
+
+        public ActionResult ViewTags()
+        {
+            blogData.Tags = _context.Tags.Include(t => t.Post).ToList();
+            blogData.Tags = blogData.Tags.OrderByDescending(t => t.Post.Count).ToList();
+
+            return View(blogData.Tags);
+        }
+
+        // Create a new role
         [HttpPost]
         public async Task<IActionResult> CreateRole()
         {
@@ -100,6 +129,7 @@ namespace BlogBravo.Controllers
             return RedirectToAction("Index");
         }
 
+        // View a role
         public ActionResult ViewRole()
         {
             string path = HttpContext.Request.Path;
@@ -115,6 +145,7 @@ namespace BlogBravo.Controllers
             return NotFound();
         }
 
+        // Delete a Role
         public ActionResult DeleteRole()
         {
             string path = HttpContext.Request.Path;
@@ -159,34 +190,49 @@ namespace BlogBravo.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult ViewBlogs()
+        // Edit a Role
+        public ActionResult EditRole()
         {
-            blogData.Blogs = _context.Blogs.ToList();
+            string path = HttpContext.Request.Path;
+            string[] pathComponents = path.Split('/');
+            string roleId = pathComponents[pathComponents.Length - 1];
 
-            return View(blogData.Blogs);
+            if (!String.IsNullOrEmpty(roleId))
+            {
+                var role = _roleManager.Roles.FirstOrDefault(r => r.Id == roleId);
+                return View(role);
+            }
+
+            return NotFound();
         }
 
-        public ActionResult ViewPosts()
+        [HttpPost]
+        public async Task<IActionResult> EditRole(string? roleId)
         {
-            blogData.Posts = _context.Posts.ToList();
-            return View(blogData.Posts);
+            if (!String.IsNullOrEmpty(roleId))
+            {
+                var role = _roleManager.Roles.FirstOrDefault(r => r.Id == roleId);
+                role.Name = Request.Form["roleName"];
+
+                var roleUpdate = await _roleManager.UpdateAsync(role);
+
+                if (roleUpdate.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return NotFound();
+
+            }
         }
 
-        public ActionResult ViewComments()
-        {
-            blogData.Comments = _context.Comments.ToList();
-
-            return View(blogData.Comments);
-        }
-
-        public ActionResult ViewTags()
-        {
-            blogData.Tags = _context.Tags.Include(t => t.Post).ToList();
-            blogData.Tags = blogData.Tags.OrderByDescending(t => t.Post.Count).ToList();
-
-            return View(blogData.Tags);
-        }
-
+        // Remove a Tag from Tags table
         public ActionResult DeleteTag()
         {
             string path = HttpContext.Request.Path.ToString();
