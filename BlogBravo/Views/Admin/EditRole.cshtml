@@ -1,0 +1,20 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityRole
+
+
+<div class="container-fluid border border-dark rounded mt-3" style="background-color:lightgrey; padding: 20px; padding-bottom: 50px;">
+    <h1 class="bg-dark text-white rounded mb-3" style="width: fit-content">Edit Role <span class="text-danger display-4">@Model.Name</span></h1>
+    <div class="container mb-2">
+        <form method="post">
+            <div class="container row mb-2">
+                <label class="mr-5">Role Id</label>
+                <input type="text" name="roleId" value="@Model.Id" style="background-color:transparent;" readonly />
+            </div>
+            <div class="container row mb-3">
+                <label class="mr-3">Role Name</label>
+                <input type="text" name="roleName" value="@Model.Name" required/>
+            </div>
+            <input type="submit" value="Save Changes" class="btn btn-dark rounded float-left" asp-controller="Admin" asp-action="EditRole" />
+        </form>
+        <button class="btn btn-dark rounded float-right" asp-area="" asp-controller="Admin" asp-action="Index">Back to the Role List</button>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 ﻿using BlogBravo.Data;
 using BlogBravo.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,10 +14,11 @@ namespace BlogBravo.Controllers
     public class BrowseController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public BrowseController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public BrowseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Browse
@@ -108,7 +110,16 @@ namespace BlogBravo.Controllers
             if (BlogId > 0)
             {
                 Blog blog = _context.Blogs.Find(BlogId);
-                var Posts = _context.Posts.Where(p => p.BlogId == BlogId).OrderBy(p=> p.Created);
+                var Posts = _context.Posts.Include(p => p.Comment).Where(p => p.BlogId == BlogId).OrderByDescending(p => p.Created);
+                foreach (var post in Posts)
+                {
+                    if (post.Comment.Count != 0)
+                    {
+                        var comments = _context.Comments.Include(c => c.Author).Where(c => c.PostId == post.Id).ToList();
+                        post.Comment = comments;
+                    }
+                } 
+
                 ViewBag.BlogPosts = Posts;
 
                 string[] postDates = new string [Posts.Count()];
@@ -174,74 +185,39 @@ namespace BlogBravo.Controllers
             return View();
         }
 
-        // ------------------------------------ MIcrosoft Code --------------------------- //
-        // GET: Browse/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Browse/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Browse/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> AddComment(int? id)
         {
-            try
+            if (id == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: Browse/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+            string commentUserName = Request.Form["post-comment-user"];
 
-        // POST: Browse/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+            var post = await _context.Posts.Include(p => p.Comment).FirstOrDefaultAsync(p => p.Id == id);
 
-        // GET: Browse/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
 
-        // POST: Browse/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
+            if (post == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
+            else
             {
-                return View();
+                post.Comment.Add(new Comment
+                {
+                    Created = DateTime.Now,
+                    Body = Request.Form["post-comment-body"],
+                    Author = await _userManager.GetUserAsync(HttpContext.User)
+                });
+
+                _context.Update(post);
+                await _context.SaveChangesAsync();
             }
+
+            ViewBag.Comments = post.Comment;
+
+            return Redirect("/Browse/Index/");
         }
     }
 }

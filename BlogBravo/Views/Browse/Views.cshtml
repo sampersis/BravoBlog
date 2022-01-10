@@ -1,28 +1,64 @@
 ﻿@model BlogBravo.Models.Blog
+@using Microsoft.AspNetCore.Identity
+@using BlogBravo.Data
 
-@{ 
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
     var blogPosts = ViewBag.BlogPosts;
 }
 
 <div class="container-fluid col-lg-12 mt-2">
     <div class="row">
+        <!-------------------------------------List of Posts in the blog----------------------->
         <div id="post-list" class="float-left col-lg-8 mr-5">
 
             @if (blogPosts != null)
             {
                 foreach (var post in blogPosts)
                 {
-            <div class="my-2" style="background-color:#ccc; height:fit-content; border:solid 3px black; border-radius:10px;">
-                <div class="bg-dark text-center text-white py-4 px-2 rounded">
-                    <h2>@post.Title</h2>
-                    <p class="float-right pb-2" style="font-size:0.75rem;"><i class="mr-1 fas fa-plus-square"></i> @post.Created.ToString("yyyy-MMMM-dd") <span class="mx-3"></span> <i class="mr-1 far fa-eye"></i> @post.Views</p>
-                </div>
-                <p class="p-2">@post.Body</p>
-            </div>
+                    string postDate = post.Created.ToString("yyyy-MMMM");
+
+                    <div id="@postDate" class="my-2" style="background-color:#ccc; height:fit-content; border:solid 3px black; border-radius:10px;" hidden>
+                        <div class="bg-dark text-center text-white py-4 px-2 rounded">
+                            <h2>@post.Title</h2>
+                            <p class="float-right pb-2" style="font-size:0.75rem;"><i class="mr-1 fas fa-plus-square"></i> @post.Created.ToString("yyyy-MMMM-dd") <span class="mx-3"></span> <i class="mr-1 far fa-eye"></i> @post.Views</p>
+                        </div>
+                        <p class="p-2">@post.Body</p>
+
+                        @if (post.Comment.Count != 0)
+                        {
+                            @foreach (var comment in post.Comment)
+                            {
+                                string commentTitle = comment.Author.FirstName + " " + comment.Author.LastName + " (" + comment.Author.Email + ") " + comment.Created;
+
+                                <div id="@comment.Id" class='alert-dark border border-dark rounded mb-2 mx-2' disabled>
+                                    <p style='font-size:0.7rem;'><span class="bg-dark text-white">@commentTitle</span>: @comment.Body</p>
+                                </div>
+                            }
+                        }
+
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="mx-2">
+                                <form id="comment-form" asp-controller="Browse" asp-action="AddComment" asp-route-id="@post.Id">
+                                    <input name="post-id" value="@post.Id" hidden />
+                                    <input id="post-comment-user" name="post-comment-user" value="@User.Identity.Name" hidden />
+                                    <textarea id="post-comment-body" name="post-comment-body" maxlength="300" class="form-control border-dark font-monospace" rows="3" onkeyup="CommentCounter(this)"></textarea>
+                                    <span id="post-comment-body-count" class="alert-dark text-danger float-right" style="font-size:0.75rem;">Count (max. 300): 0</span>
+                                    <div class="form-group mt-4 mb-3">
+                                        <button type="submit" class="btn btn-sm btn-outline-dark">Add Comment</button>
+                                        <button class="btn btn-outline-dark float-right" asp-area="" asp-controller="Browse" asp-action="Index">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                    </div>
                 }
             }
         </div>
 
+        <!---------------------------Bolg Info on the right side ------------------------------>
         <div id="blog-data" class="float-right col-lg-3" style="border: solid 3px black; border-radius: 10px; height: fit-content; background-color: #ccc; ">
             <h1 class="bg-dark text-white my-2 p-2" style="border:solid 2px black; border-radius:10px; width:fit-content; margin:0 auto;">@Model.Title</h1>
             <h6 class="p-2 mb-2" style="border: solid 2px black; border-radius: 10px; width: fit-content; margin: 0 auto;">@Model.Body</h6>
@@ -33,7 +69,7 @@
                     foreach (var year in ViewBag.postYears)
                     {
                         <div style="margin: 0 auto;">
-                            <select>
+                            <select id="@year" onchange="SelectedMonth(this.id, this.selectedIndex);">
                                 <option selected="selected">Year @year</option>
                                 @if (TempData[year] != null)
                                 {
@@ -47,8 +83,59 @@
                     }
                 }
             </div>
-
-            </div>
+            <div class="d-flex flex-column justify-content-center mt-3 mb-2"><a class="btn btn-sm btn-dark" asp-controller="Browse" asp-action="Index">Back to the Blog List</a></div>
+        </div>
     </div>
+
 </div>
 
+<script>
+    function SelectedMonth(id, selection) {
+        console.log("Select: " + id + " Option: ", selection);
+
+        var monthSelected = parseInt(selection); // console.log("Tag Selected: " + tagSelected);
+
+
+        if (selection > 0) {
+            // Get the tag id and create the path for creating a list of posts using the specific tag
+            var monthId = $("#" + id + " option:selected").val(); console.log("Month Selected: " + monthId);
+            var postId = id + "-" + monthId;
+            console.log("Selected posts: ", postId);
+
+            var div = document.querySelector("#post-list");
+            var Children = div.childNodes;
+            console.log("Number of Children: " + Children.length);
+
+            for (var i = 0; i < Children.length; i++) {
+                var childId = $(Children[i]).attr('id');
+                console.log("Child Id: " + childId);
+
+                if (childId == postId) {
+                    $(Children[i]).prop('hidden', false);
+                }
+                else {
+                    $(Children[i]).prop('hidden', true);
+                }
+            }
+        }
+        else if (selection == 0) {
+            var div = document.querySelector("#post-list");
+            var Children = div.childNodes;
+            console.log("Number of Children: " + Children.length);
+
+            for (var i = 0; i < Children.length; i++) {
+                $(Children[i]).prop('hidden', true);
+
+            }
+        }
+
+        $("#" + id).prop("selectedIndex", 0);
+    }
+
+
+    function CommentCounter(textarea) {
+        var length = $(textarea).val().length;
+        console.log("Value:" + $(textarea).val() + "Count: " + length);
+        $(textarea).next().text('Count (max. 300): ' + length);
+    }
+</script>
