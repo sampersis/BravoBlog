@@ -1,32 +1,86 @@
 ﻿@model IEnumerable<BlogBravo.Data.ApplicationUser>
 @using BlogBravo.Data
 @using Microsoft.AspNetCore.Identity
+
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
+@inject RoleManager<IdentityRole> RoleManager
 
 @{
     Layout = null;
 }
 
-<p>
-    <a class="btn btn-secondary" asp-action="Create">Create A New User</a>
-</p>
-<table class="table table-striped" style="font-family:'Tw Cen MT'">
+<style>
+    * {
+        font-family: 'Tw Cen MT';
+    }
+</style>
+
+
+<div id="create-user" class="bg-light border border-dark rounded col-md-6 my-2 py-3 px-5" hidden>
+    <form method="post">
+        <div class="form-group">
+            <label class="btn btn-sm btn-dark py-0 ml-1" style="font-size: 0.9rem; border-radius: 25px;">First Name</label>
+            <input id="first-name" name="first-name" class="form-control" maxlength="50" style="border-radius:25px;" required />
+        </div>
+        <div class="form-group">
+            <label class="btn btn-sm btn-dark py-0 ml-1" style="font-size: 0.9rem; border-radius: 25px;">Last Name</label>
+            <input id="last-name" name="last-name" class="form-control" maxlength="50" style="border-radius:25px;" required />
+        </div>
+        <div class="form-group">
+            <label class="btn btn-sm btn-dark py-0 ml-1" style="font-size: 0.9rem; border-radius: 25px;">Email</label>
+            <input id="email" type="email" name="email" class="form-control" style="border-radius:25px;" required />
+        </div>
+        <div class="form-group">
+            <label class="btn btn-sm btn-dark py-0 ml-1" style="font-size: 0.9rem; border-radius: 25px;">Password</label>
+            <input id="password" type="password" name="password" class="form-control" style="border-radius:25px;" required />
+        </div>
+        <div class="form-group">
+            <label class="btn btn-sm btn-dark py-0 ml-1" style="font-size: 0.9rem; border-radius: 25px;">Confirm Password</label>
+            <input id="retype-password" type="password" name="confirm-password" class="form-control" style="border-radius:25px;" required />
+            <span id="password-match"></span>
+        </div>
+        <div class="form-group row mb-5 ml-1">
+            <label class="btn btn-sm btn-dark mr-5 py-0" style="font-size: 0.9rem; border-radius: 25px;">Select a Role</label>
+            <select id="role-selector" class="rounded" style="height:fit-content;" onchange="roleSelection(this.selectedIndex);">
+                <option selected="selected">Select a Role</option>
+                @foreach (var role in ViewBag.Roles)
+                {
+                    <option>@role.Name</option>
+                }
+            </select>
+            <input id="role" name="role" value="" hidden/>
+        </div>
+        <div class="form-group row mb-2">
+            <div>
+                <button type="submit" class="btn btn-dark py-0 mb-3 mr-5" style="border-radius: 25px;" asp-controller="Admin" asp-action="CreateUser">Register</button>
+            </div>
+            <div>
+                <a id="cancel" href="#" class="btn btn-dark py-0 float-right" style="border-radius: 25px;">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+<div>
+    <button id="create-a-new-user" class="btn btn-secondary mb-3">Create A New User</button>
+</div>
+
+<table class="table table-striped">
     <thead class="bg-secondary text-white">
         <tr>
-            <th style="font-family:'Tw Cen MT'">
+            <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
-            <th style="font-family:'Tw Cen MT'">
+            <th>
                 @Html.DisplayNameFor(model => model.UserName)
             </th>
-            <th style="font-family:'Tw Cen MT'">
+            <th>
                 @Html.DisplayNameFor(model => model.FirstName)
             </th>
-            <th style="font-family:'Tw Cen MT'">
+            <th>
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
-            <th style="font-family:'Tw Cen MT'">
+            <th>
                 Role
             </th>
             <th></th>
@@ -39,22 +93,22 @@
             string userRole = UserRole.ElementAt(0);
 
             <tr>
-                <td style="font-family:'Tw Cen MT'">
+                <td>
                     @Html.DisplayFor(modelItem => item.Id)
                 </td>
-                <td style="font-family:'Tw Cen MT'">
+                <td>
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
-                <td style="font-family:'Tw Cen MT'">
+                <td>
                     @Html.DisplayFor(modelItem => item.FirstName)
                 </td>
-                <td style="font-family:'Tw Cen MT'">
+                <td>
                     @Html.DisplayFor(modelItem => item.LastName)
                 </td>
-                <td style="font-family:'Tw Cen MT'">
+                <td>
                     @userRole
                 </td>
-                <td style="font-family:'Tw Cen MT'">
+                <td>
                     <div class="btn-group">
                         <a asp-action="Edit" asp-route-id="@item.Id"><i class=" mr-1 fas fa-edit"></i></a>
                         <a asp-action="Details" asp-route-id="@item.Id"><i class="mr-1 text-success fas fa-eye"></i></a>
@@ -65,3 +119,83 @@
         }
     </tbody>
 </table>
+
+<script>
+    $("#create-a-new-user").click(function () {
+        $("#create-user input").val("");
+        $("#create-user").prop('hidden', false);
+        $("#create-a-new-user").hide();
+    });
+
+    $("#cancel").click(function () {
+        $("#create-user input").val("");
+        $("#create-user").prop('hidden', true);
+        $("#create-a-new-user").show();
+    });
+
+    $("#first-name").keyup(function () {
+        var letters = /^[A-Za-zÅÄÖåäöÜü]{1,}$/;
+
+        //get the last charcter typed
+        var firstname = $("#first-name").val(); console.log("First Name: " + firstname);
+        lastCharTyped = firstname[firstname.length - 1]; console.log("Last Typed Letter: " + lastCharTyped);
+
+        //check whether it is alphabets
+
+        if (!letters.test(lastCharTyped)) {
+            $("#first-name").val(firstname.slice(0, -1));
+        }
+        else {
+            $("#first-name").val(firstname.charAt(0).toUpperCase() + firstname.slice(1));
+        }
+    });
+
+
+    $("#last-name").keyup(function () {
+        var letters = /^[A-Za-zÅÄÖåäöÜü]{1,}$/;
+
+        //get the last charcter typed
+        var lastname = $("#last-name").val(); console.log("Last Name: " + lastname);
+        lastCharTyped = lastname[lastname.length - 1]; console.log("Last Typed Letter: " + lastCharTyped);
+
+        //check whether it is alphabets
+
+        if (!letters.test(lastCharTyped)) {
+            $("#last-name").val(lastname.slice(0, -1));
+        }
+        else {
+            $("#last-name").val(lastname.charAt(0).toUpperCase() + lastname.slice(1));
+        }
+    });
+
+    $("#retype-password").keyup(function () {
+            password = $("#password").val(); console.log("Password: " + password);
+            retypePassword = $("#retype-password").val(); console.log("Retryped Password: " + retypePassword);
+
+        if (password != "") {
+            if (password != retypePassword) {
+                $("#password-match").text("Passwords do not match!");
+                $("#password-match").css("color", "red");
+            }
+            else {
+                $("#password-match").css("color", "green");
+                $("#password-match").text("Passwords match!");
+            }
+        }
+        else {
+            $("#password-match").css("color", "red");
+            $("#password-match").text("Password is empty!");
+        }
+    });
+
+    function roleSelection(option) {
+        var selectedOption = parseInt(option);
+        if (selectedOption > 0) {
+            var role = $("#role-selector option:selected").val();
+            $("#role").val(role);
+        }
+        else {
+            $('#role').val("");
+        }
+    }
+</script>

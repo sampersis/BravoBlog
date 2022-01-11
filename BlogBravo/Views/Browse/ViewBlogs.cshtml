@@ -29,9 +29,9 @@
             }
         }
 
-        if (totalNumOfPosts < 10 && totalNumOfPosts != 0)
+        if (totalNumOfPosts < 10 && totalNumOfPosts == 0)
         {
-            blogList.Add(new string[] { "0"+totalNumOfPosts.ToString(),
+            blogList.Add(new string[] { " "+totalNumOfPosts.ToString(),
                 item.Title, item.Created.ToString("yyyy-MM-dd"),
                 user.FirstName + " " + user.LastName,item.Id.ToString()});
         }
@@ -45,10 +45,10 @@
 
     }
 
+    //blogList = blogList.OrderByDescending(b => b.ElementAt(0)).ToList();
 
+    blogList = blogList.OrderByDescending(b => Convert.ToInt32(b.ElementAt(0))).ToList();
 
-    blogList = blogList.OrderByDescending(b => b.ElementAt(0)).ToList();
-    
 
 }
 
@@ -59,11 +59,11 @@
                     Views
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Title)
+                    Title
                 </th>
 
                 <th>
-                    @Html.DisplayNameFor(model => model.Created)
+                    Created
                 </th>
                 <th>
                     Author
@@ -72,26 +72,25 @@
         </thead>
         <tbody>
 
-            @foreach (var item in blogList)
+            @foreach (var blog in blogList)
             {
-                
                 <tr>
                     <td>
-                        @item.ElementAt(0)
+                        @blog.ElementAt(0)
                     </td>
                     <td>
-                        @item.ElementAt(1)
+                        @blog.ElementAt(1)
 
                     </td>
 
                     <td>
-                        @item.ElementAt(2)
+                        @blog.ElementAt(2)
                     </td>
                     <td>
-                        @item.ElementAt(3)
+                        @blog.ElementAt(3)
                     </td>
                     <td>
-                        <a asp-controller="Browse" asp-action="Views" asp-route-id="@Convert.ToInt32(@item.ElementAt(4))"><i class="text-dark fas fa-list-alt" style="font-size:2rem;"></i></a>
+                        <a asp-controller="Browse" asp-action="Views" asp-route-id="@Convert.ToInt32(blog.ElementAt(4))"><i class="text-dark fas fa-list-alt" style="font-size:2rem;"></i></a>
                     </td>
                 </tr>
             }
