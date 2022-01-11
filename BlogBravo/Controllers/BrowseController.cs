@@ -36,7 +36,7 @@ namespace BlogBravo.Controllers
 
         public ActionResult ViewPosts()
         {
-            List<Post> Posts = _context.Posts.OrderBy(p => p.Title).OrderBy(p=>p.BlogId).ToList();
+            List<Post> Posts = _context.Posts.OrderBy(p => p.Title).OrderByDescending(p=>p.Views).Take(10).ToList();
             return View(Posts);
         }
 
@@ -118,7 +118,22 @@ namespace BlogBravo.Controllers
                         var comments = _context.Comments.Include(c => c.Author).Where(c => c.PostId == post.Id).ToList();
                         post.Comment = comments;
                     }
-                } 
+                }
+
+                // Increase post views
+
+                foreach (var post in Posts)
+                {
+                    Post postToUpdate = _context.Posts.Find(post.Id);
+                    post.Views++;
+
+                    postToUpdate.Views = post.Views;
+                    _context.Update(postToUpdate);
+                }
+
+                _context.SaveChanges();
+
+                // Pass all posts as a ViewBag
 
                 ViewBag.BlogPosts = Posts;
 
@@ -188,10 +203,13 @@ namespace BlogBravo.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
             }
+
+            string url = Request.Form["url"];
 
             string commentUserName = Request.Form["post-comment-user"];
 
@@ -217,7 +235,7 @@ namespace BlogBravo.Controllers
 
             ViewBag.Comments = post.Comment;
 
-            return Redirect("/Browse/Index/");
+            return Redirect(url);
         }
     }
 }

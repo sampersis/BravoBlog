@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using BlogBravo.Areas.Identity.Pages.Account;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace BlogBravo.Controllers
 {
@@ -53,7 +55,8 @@ namespace BlogBravo.Controllers
         // Partial Requests that results in partial views to be loaded in the first page
         public ActionResult ViewUsers()
         {
-            blogData.Users = _userManager.Users.ToList();
+            blogData.Users = _userManager.Users.OrderBy(u=>u.LastName).ThenByDescending(u=>u.FirstName).ToList();
+            ViewBag.Roles = _roleManager.Roles.ToList();
 
             return View(blogData.Users);
         }
@@ -92,6 +95,8 @@ namespace BlogBravo.Controllers
 
             return View(blogData.Tags);
         }
+
+        // ------------------------------------------- Role Methods --------------------------------------//
 
         // Create a new role
         [HttpPost]
@@ -231,6 +236,64 @@ namespace BlogBravo.Controllers
 
             }
         }
+
+        //-------------------------------------------- User Methods -------------------------------------------------//
+
+        [HttpPost]
+        public async Task<IActionResult> CreateUser()
+        {
+            // Do not waste time. If it is not possible to create an email address then the email is not OK and the user cannot be created
+
+            string email = Request.Form["email"];
+            //string emailReGExpression = @"^(?("")("".+?(?<!\\)""@)| (([0 - 9a - z]((\.(? !\.)) |[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$";
+            string emailReGExpression = @"^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&’*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+
+            Regex emailCheck = new Regex(emailReGExpression);
+
+            // MailAddress.TryCreate(email, out MailAddress emailAddress) did not work. It is not fully 5322  complaint
+
+            if (!string.IsNullOrEmpty(email) && emailCheck.IsMatch(email))
+            {
+                if (ModelState.IsValid)
+                {
+                    ApplicationUser newUser = new ApplicationUser
+                    {
+                        UserName = email,
+                        FirstName = Request.Form["first-name"],
+                        LastName = Request.Form["last-name"],
+                        Email = email
+                    };
+
+                    IdentityResult UserCreatedOK = await _userManager.CreateAsync(newUser, Request.Form["password"]);
+                    if (UserCreatedOK.Succeeded)
+                    {
+                        IdentityResult RoleAddedtoUserSuccess = await _userManager.AddToRoleAsync(newUser, Request.Form["role"]);
+                        if (RoleAddedtoUserSuccess.Succeeded)
+                        {
+                            return View("Index");
+                        }
+                        else
+                        {
+                            foreach (IdentityError error in RoleAddedtoUserSuccess.Errors)
+                                ModelState.AddModelError("", error.Description);
+                        }
+                    }
+                    else
+                    {
+                        foreach (IdentityError error in UserCreatedOK.Errors)
+                            ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
+            else
+            {
+                //failed
+            }
+
+            return View("Index");
+        }
+
+        //------------------------------------------------Tag Methods ------------------------------------------------//
 
         // Remove a Tag from Tags table
         public ActionResult DeleteTag()
