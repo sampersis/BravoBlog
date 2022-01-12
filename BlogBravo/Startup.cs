@@ -48,6 +48,7 @@ namespace BlogBravo
         {
             if (env.IsDevelopment())
             {
+                app.UseExceptionHandler("/error-development"); // Added to handle the error messages
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
             }

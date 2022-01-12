@@ -16,9 +16,11 @@ using BlogBravo.Areas.Identity.Pages.Account;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 
-namespace BlogBravo.Controllers
+
+namespace BlogBravo.Controllers 
 {
     [Authorize(Roles = "sysadmin")]
+
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -240,28 +242,21 @@ namespace BlogBravo.Controllers
         //-------------------------------------------- User Methods -------------------------------------------------//
 
         [HttpPost]
+        [Route("/error-development")]      
+        public IActionResult HandleError() => Problem();
         public async Task<IActionResult> CreateUser()
         {
-            // Do not waste time. If it is not possible to create an email address then the email is not OK and the user cannot be created
-
-            string email = Request.Form["email"];
-            //string emailReGExpression = @"^(?("")("".+?(?<!\\)""@)| (([0 - 9a - z]((\.(? !\.)) |[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$";
-            string emailReGExpression = @"^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&’*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
-
-            Regex emailCheck = new Regex(emailReGExpression);
-
-            // MailAddress.TryCreate(email, out MailAddress emailAddress) did not work. It is not fully 5322  complaint
-
-            if (!string.IsNullOrEmpty(email) && emailCheck.IsMatch(email))
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                if (await _userManager.FindByEmailAsync(Request.Form["email"]) == null)
                 {
+
                     ApplicationUser newUser = new ApplicationUser
                     {
-                        UserName = email,
+                        UserName = Request.Form["email"],
                         FirstName = Request.Form["first-name"],
                         LastName = Request.Form["last-name"],
-                        Email = email
+                        Email = Request.Form["email"]
                     };
 
                     IdentityResult UserCreatedOK = await _userManager.CreateAsync(newUser, Request.Form["password"]);
@@ -276,23 +271,178 @@ namespace BlogBravo.Controllers
                         {
                             foreach (IdentityError error in RoleAddedtoUserSuccess.Errors)
                                 ModelState.AddModelError("", error.Description);
+                            return Problem("Failed to creaye user!" + ModelState);
                         }
                     }
                     else
                     {
                         foreach (IdentityError error in UserCreatedOK.Errors)
                             ModelState.AddModelError("", error.Description);
+                        return Problem("Failed to creaye user!" + ModelState);
                     }
                 }
-            }
-            else
-            {
-                //failed
+                else
+                {
+                    return Problem("A User with this email has already resistered: " + Request.Form["email"]);
+                }
+
             }
 
             return View("Index");
         }
 
+        public ActionResult DeleteUser()
+        {
+            string path = HttpContext.Request.Path;
+            string[] pathComponents = path.Split('/');
+            string userId = pathComponents[pathComponents.Length - 1];
+
+            if (!String.IsNullOrEmpty(userId))
+            {
+                ApplicationUser user = _userManager.Users.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    return View(user);
+                }
+                else
+                { 
+                    return Problem("Failed to retrieve information about the user with ID: " + userId);
+                }
+            }
+            else
+            {
+                return Problem("User ID was not passed in the URL");
+            }
+        }
+
+        [HttpPost, ActionName("DeleteUser")]
+        public async Task<IActionResult> DeleteUserConfirmed(string? userId)
+        {
+            if (userId != null)
+            {
+                var user = _userManager.Users.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    if (await _userManager.DeleteAsync(user) != null)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        return Problem(user.Email + " Could not be removed!");
+                    }
+                }
+                else
+                {
+                    return Problem("Failed to retrieve information about the user with ID: " + userId);
+                }
+            }
+            else
+            {
+                return Problem("User ID was null");
+            }
+        }
+
+        public async Task<ActionResult> EditUser()
+        {
+            string path = HttpContext.Request.Path;
+            string[] pathComponents = path.Split('/');
+            string userId = pathComponents[pathComponents.Length - 1];
+
+            if (!String.IsNullOrEmpty(userId))
+            {
+                var user = _userManager.Users.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    IList<string> role = await _signInManager.UserManager.GetRolesAsync(user);
+                    if (role.Count > 0)
+                    {
+                        ViewBag.Role = role.ElementAt(0);
+                    }
+                    else
+                    {
+                        ViewBag.Role = "undefined";
+                    }
+                    return View(user);
+                }
+                else
+                {
+                    return Problem("Failed to retrieve information about the user with ID: " + userId);
+                }
+            }
+            else
+            {
+                return Problem("User ID was not passed in the URL");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(string? userId)
+        {
+            if (userId != null)
+            {
+                var user = _userManager.Users.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    user.FirstName = Request.Form["user-first-name"];
+                    user.LastName = Request.Form["user-last-name"];
+                    user.UserName = Request.Form["user-name"];
+                    user.Email = Request.Form["user-email"];
+                    
+                    if(!String.IsNullOrWhiteSpace(Request.Form["user-role"]) && !String.IsNullOrEmpty(Request.Form["user-role"]))
+                    {
+                        var userCurrentRole = await _signInManager.UserManager.GetRolesAsync(user);
+                        var updateUserRole = await _signInManager.UserManager.RemoveFromRolesAsync(user, userCurrentRole);
+                        if (updateUserRole.Succeeded)
+                        {
+                            updateUserRole = await _signInManager.UserManager.AddToRoleAsync(user, Request.Form["user-role"]);
+                            if (!updateUserRole.Succeeded)
+                            {
+                                return Problem($"Could not add role {Request.Form["user-role"]} from user {user.UserName}");
+                            }
+                        }
+                        else
+                        {
+                            return Problem($"Could not remove role {userCurrentRole.ElementAt(0)} from user {user.UserName}");
+                        }
+                    }
+
+                    if (!String.IsNullOrWhiteSpace(Request.Form["user-password"]) && !String.IsNullOrEmpty(Request.Form["user-password"]))
+                    {
+                        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                        var passwordChanged = await _userManager.ResetPasswordAsync(user, token, Request.Form["user-password"]);
+                        if(!passwordChanged.Succeeded)
+                        {
+                            return Problem("Password update for user failed: " + userId + " " + user.Email);
+                        }
+                    }
+
+                    var userUpdate = await _userManager.UpdateAsync(user);
+
+                    if (userUpdate.Succeeded)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        return Problem("Failed to update user with ID: " + userId);
+                    }
+                }
+                else
+                {
+                    return Problem("Failed to retrieve information about the user with ID: " + userId);
+                }
+            }
+            else
+            {
+                return Problem("User ID was not passed in the URL");
+
+            }
+        }
         //------------------------------------------------Tag Methods ------------------------------------------------//
 
         // Remove a Tag from Tags table
