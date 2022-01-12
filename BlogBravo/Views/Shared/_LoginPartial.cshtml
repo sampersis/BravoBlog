@@ -15,7 +15,6 @@
             var user = await UserManager.GetUserAsync(Context.User);
             string userName = user.FirstName + " " + user.LastName + "'s";
 
-
             if (@User.IsInRole("author"))
             {
                 <li class="nav-item">
@@ -46,6 +45,14 @@
                 <li class="nav-item">
                     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                         <button type="submit" class="nav-link btn btn-link text-dark"><span class="text-white">Logout <i class="fas fa-sign-out-alt"></i></span></button>
+                    </form>
+                </li>
+            }
+            else if (@User.IsInRole("user"))
+            {
+                <li class="nav-item">
+                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button type="submit" class="nav-link btn btn-link text-dark"><span class="text-white">@user.FirstName @user.LastName Logout <i class="fas fa-sign-out-alt"></i></span></button>
                     </form>
                 </li>
             }

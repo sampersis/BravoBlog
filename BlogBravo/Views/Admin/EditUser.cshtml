@@ -1,0 +1,71 @@
+﻿@using BlogBravo.Data
+@model BlogBravo.Data.ApplicationUser
+
+
+@{
+    ViewData["Title"] = "Edit User";
+    
+}
+
+<style>
+    * {
+        font-family: 'Tw Cen MT';
+    }
+</style>
+
+<div class="container-fluid border border-dark rounded mt-3" style="background-color:lightgrey; padding: 20px; padding-bottom: 50px;">
+    <h1 class="bg-dark text-white rounded mb-3" style="width: fit-content">Edit User <span class="text-danger display-4">@Model.FirstName @Model.LastName </span></h1>
+    <div class="container mb-2">
+        <form method="post">
+            <div class="container row mb-2">
+                <label class="mr-5">User Id</label><span>@Model.Id</span>
+                <input class="rounded" type="text" name="userId" value="@Model.Id" style="background-color:transparent;" hidden required />
+            </div>
+            <div class="container row mb-3">
+                <label class="mr-4">First Name</label>
+                <input class="rounded" type="text" name="user-first-name" value="@Model.FirstName" required />
+            </div>
+            <div class="container row mb-3">
+                <label class="mr-4">Last Name</label>
+                <input class="rounded" type="text" name="user-last-name" value="@Model.LastName" required />
+            </div>
+            <div class="container row mb-3">
+                <label class="mr-3">User Name</label>
+                <input class="rounded" type="text" name="user-name" value="@Model.UserName" required />
+            </div>
+            <div class="container row mb-3">
+                <label class="mr-5">Email</label>
+                <input class="rounded" type="text" name="user-email" value="@Model.Email" required />
+            </div>
+            <div class="container row mb-3">
+                <label class="mr-4">Password</label>
+                <input class="rounded" type="text" name="user-password" value="" />
+            </div>
+            <div class="container row mb-3">
+                <label class="mr-5">Role</label>
+                <input id="user-role" class="rounded ml-2" type="text" name="user-role" value="@ViewBag.Role" required />
+            </div>
+            <div class="form-check row mb-3 ml-1">
+                <input id="user-lock" class="form-check-input" type="checkbox" name="user-lock" />
+                <label class="form-check-label" for="user-lock">Check to Lock @Model.FirstName @Model.LastName's Account</label>
+            </div>
+            <input type="submit" value="Save Changes" class="btn btn-dark rounded float-left" asp-controller="Admin" asp-action="EditUser" />
+        </form>
+        <a href="/Admin/Index" class="btn btn-dark rounded float-right">Back to the User List</a>
+    </div>
+</div>
+
+<script>
+    let role = document.querySelector("#user-role").value;
+    console.log("Role Start: " + role);
+
+    document.querySelector("#user-lock").addEventListener('change', function () {
+        if ($("#user-lock").is(":checked")) {
+            $("#user-role").val("locked");
+        }
+        else {
+            console.log("Role End: " + role);
+            $("#user-role").val(role);
+        }
+    });
+</script>
