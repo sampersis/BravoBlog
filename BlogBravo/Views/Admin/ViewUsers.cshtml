@@ -184,7 +184,7 @@
     });
 
     $("#email").keyup(function () {
-        var emailRE = /(^[A-Za-z0-9_]+([\.]{0,1})[A-Za-z0-9_]+){1}([@@]{1})([A-Za-z0-9]{1,}[\.]{1}){1,3}([A-Za-z]{2,63}){1}$/;
+        var emailRE = /(^[A-Za-z0-9_-]+([\.]{0,1})[A-Za-z0-9_-]+){1}([@@]{1})([A-Za-z0-9]{1,}[\.]{1}){1,3}([A-Za-z]{2,63}){1}$/;
         var email = $("#email").val();
         if (email.length > 0) {
             if (emailRE.test(email)) {

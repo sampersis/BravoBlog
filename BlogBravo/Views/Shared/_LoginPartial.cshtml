@@ -5,9 +5,6 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-    <style>
-
-    </style>
 
     <ul class="navbar-nav">
         @if (SignInManager.IsSignedIn(User))
@@ -55,6 +52,14 @@
                         <button type="submit" class="nav-link btn btn-link text-dark"><span class="text-white">@user.FirstName @user.LastName Logout <i class="fas fa-sign-out-alt"></i></span></button>
                     </form>
                 </li>
+            }
+            else if (@User.IsInRole("locked"))
+            {
+    <li class="nav-item">
+        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button type="submit" class="nav-link btn btn-link"><span class="text-danger">@user.FirstName @user.LastName <i class="fas fa-lock"></i> </span><span class="text-white">Logout <i class="fas fa-sign-out-alt"></i></span></button>
+         </form>
+</li>
             }
         }
         else

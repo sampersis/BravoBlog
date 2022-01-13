@@ -17,15 +17,15 @@
 <div id="view-posts-by-a-tag"></div>
 
 <script>
- /*   window.onload = function () {document.querySelector("#list-of-tags").selectedIndex = 0;} */
+
 
     function SelectedTag(selection) {
-        var tagSelected = parseInt(selection); // console.log("Tag Selected: " + tagSelected);
+        var tagSelected = parseInt(selection);
 
          
         if (selection > 0) {
             // Get the tag id and create the path for creating a list of posts using the specific tag
-            var tagId = $("#list-of-tags option:selected").val(); // console.log("Tag ID: " + tagId);
+            var tagId = $("#list-of-tags option:selected").val(); 
             sessionStorage.setItem('tagId', tagId);
             var path = "/Browse/ViewPostsWithTag/" + tagId;
 
