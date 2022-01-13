@@ -21,43 +21,50 @@
                     string postDate = post.Created.ToString("yyyy-MMMM");
 
 
-                    <div id="@postDate" class="my-2" style="background-color:#ccc; height:fit-content; border:solid 3px black; border-radius:10px;" hidden>
-                        <div class="bg-dark text-center text-white py-4 px-2 rounded">
-                            <h2>@post.Title</h2>
+            <div id="@postDate" class="my-2" style="background-color:#ccc; height:fit-content; border:solid 3px black; border-radius:10px;" hidden>
+                <div class="bg-dark text-center text-white py-4 px-2 rounded">
+                    <h2>@post.Title</h2>
 
-                            <p class="float-right pb-2" style="font-size:0.75rem;"><i class="mr-1 fas fa-plus-square"></i> @post.Created.ToString("yyyy-MMMM-dd") <span class="mx-3"></span> <i class="mr-1 far fa-eye"></i> @post.Views</p>
+                    <p class="float-right pb-2" style="font-size:0.75rem;"><i class="mr-1 fas fa-plus-square"></i> @post.Created.ToString("yyyy-MMMM-dd") <span class="mx-3"></span> <i class="mr-1 far fa-eye"></i> @post.Views</p>
+                </div>
+                <p class="p-2">@post.Body</p>
+
+                @if (post.Comment.Count != 0)
+                {
+                    @foreach (var comment in post.Comment)
+                    {
+                        string commentTitle = "";
+                        @if (SignInManager.IsSignedIn(User) && !@User.IsInRole("locked"))
+                        {
+                            commentTitle = comment.Author.FirstName + " " + comment.Author.LastName + " (" + comment.Author.Email + ") " + comment.Created.ToString();
+                        }
+                        else
+                        {
+                                commentTitle = comment.Created.ToString();
+                        }
+
+                        <div id="@comment.Id" class='alert-dark border border-dark rounded mb-2 mx-2 px-1 pt-1' disabled>
+                            <p style='font-size:0.7rem;'><span class="bg-dark text-white">@commentTitle</span>: @comment.Body</p>
                         </div>
-                        <p class="p-2">@post.Body</p>
+                    }
+                }
 
-                        @if (post.Comment.Count != 0)
-                        {
-                            @foreach (var comment in post.Comment)
-                            {
-                                string commentTitle = comment.Author.FirstName + " " + comment.Author.LastName + " (" + comment.Author.Email + ") " + comment.Created;
-
-                                <div id="@comment.Id" class='alert-dark border border-dark rounded mb-2 mx-2 px-1 pt-1' disabled>
-                                    <p style='font-size:0.7rem;'><span class="bg-dark text-white">@commentTitle</span>: @comment.Body</p>
-                                </div>
-                            }
-                        }
-
-                        @if (SignInManager.IsSignedIn(User))
-                        {
-                            <div class="mx-2">
-                                <form id="comment-form" asp-controller="Browse" asp-action="AddComment" asp-route-id="@post.Id">
-                                    <input name="url" value="@Context.Request.Path" hidden />
-                                    <input name="post-id" value="@post.Id" hidden />
-                                    <input id="post-comment-user" name="post-comment-user" value="@User.Identity.Name" hidden />
-                                    <textarea id="post-comment-body" name="post-comment-body" maxlength="300" class="form-control border-dark font-monospace" rows="3" onkeyup="CommentCounter(this)"></textarea>
-                                    <span id="post-comment-body-count" class="alert-dark text-danger float-right" style="font-size:0.75rem;">Count (max. 300): 0</span>
-                                    <div class="form-group mt-4 mb-3">
-                                        <button type="submit" class="btn btn-sm btn-outline-dark">Add Comment</button>
-                                        @*<button class="btn btn-outline-dark float-right" asp-area="" asp-controller="Browse" asp-action="Index">Cancel</button>*@
-                                    </div>
-                                </form>
+                @if (SignInManager.IsSignedIn(User) && !@User.IsInRole("locked"))
+                {
+                    <div class="mx-2">
+                        <form id="comment-form" asp-controller="Browse" asp-action="AddComment" asp-route-id="@post.Id">
+                            <input name="url" value="@Context.Request.Path" hidden />
+                            <input name="post-id" value="@post.Id" hidden />
+                            <input id="post-comment-user" name="post-comment-user" value="@User.Identity.Name" hidden />
+                            <textarea id="post-comment-body" name="post-comment-body" maxlength="300" class="form-control border-dark font-monospace" rows="3" onkeyup="CommentCounter(this)"></textarea>
+                            <span id="post-comment-body-count" class="alert-dark text-danger float-right" style="font-size:0.75rem;">Count (max. 300): 0</span>
+                            <div class="form-group mt-4 mb-3">
+                                <button type="submit" class="btn btn-sm btn-outline-dark">Add Comment</button>
                             </div>
-                        }
+                        </form>
                     </div>
+                }
+            </div>
                 }
             }
         </div>

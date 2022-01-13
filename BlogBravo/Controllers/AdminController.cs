@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlogBravo.Data;
 using BlogBravo.Models;
@@ -13,8 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using BlogBravo.Areas.Identity.Pages.Account;
-using System.Net.Mail;
-using System.Text.RegularExpressions;
 
 
 namespace BlogBravo.Controllers 
@@ -392,23 +389,36 @@ namespace BlogBravo.Controllers
                     user.LastName = Request.Form["user-last-name"];
                     user.UserName = Request.Form["user-name"];
                     user.Email = Request.Form["user-email"];
+
                     
-                    if(!String.IsNullOrWhiteSpace(Request.Form["user-role"]) && !String.IsNullOrEmpty(Request.Form["user-role"]))
+                    if (!String.IsNullOrWhiteSpace(Request.Form["user-role"]) && !String.IsNullOrEmpty(Request.Form["user-role"]))
                     {
+                        string role = Request.Form["user-role"];
                         var userCurrentRole = await _signInManager.UserManager.GetRolesAsync(user);
-                        var updateUserRole = await _signInManager.UserManager.RemoveFromRolesAsync(user, userCurrentRole);
-                        if (updateUserRole.Succeeded)
+                        if (!String.Equals(role,userCurrentRole.ElementAt(0)))
                         {
-                            updateUserRole = await _signInManager.UserManager.AddToRoleAsync(user, Request.Form["user-role"]);
-                            if (!updateUserRole.Succeeded)
+                            var updateUserRole = await _signInManager.UserManager.RemoveFromRolesAsync(user, userCurrentRole);
+                            if (updateUserRole.Succeeded)
                             {
-                                return Problem($"Could not add role {Request.Form["user-role"]} from user {user.UserName}");
+                                updateUserRole = await _signInManager.UserManager.AddToRoleAsync(user, role);
+                                if (!updateUserRole.Succeeded)
+                                {
+                                    return Problem($"Could not add role {role} from user {user.UserName}");
+                                }
+                            }
+                            else
+                            {
+                                return Problem($"Could not remove role {userCurrentRole.ElementAt(0)} from user {user.UserName}");
                             }
                         }
                         else
                         {
-                            return Problem($"Could not remove role {userCurrentRole.ElementAt(0)} from user {user.UserName}");
+                            return Problem($" {user.UserName} has already role {Request.Form["user-role"]}");
                         }
+                    }
+                    else
+                    {
+                        return Problem($" Cannot assign empty role to {user.UserName}");
                     }
 
                     if (!String.IsNullOrWhiteSpace(Request.Form["user-password"]) && !String.IsNullOrEmpty(Request.Form["user-password"]))

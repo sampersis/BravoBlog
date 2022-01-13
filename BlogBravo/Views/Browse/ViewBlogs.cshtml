@@ -74,25 +74,32 @@
 
             @foreach (var blog in blogList)
             {
-                <tr>
-                    <td>
-                        @blog.ElementAt(0)
-                    </td>
-                    <td>
-                        @blog.ElementAt(1)
+            <tr>
+                <td>
+                    @blog.ElementAt(0)
+                </td>
+                <td>
+                    @blog.ElementAt(1)
 
-                    </td>
+                </td>
 
-                    <td>
-                        @blog.ElementAt(2)
-                    </td>
+                <td>
+                    @blog.ElementAt(2)
+                </td>
+                @if (SignInManager.IsSignedIn(User) && !@User.IsInRole("locked"))
+                {
                     <td>
                         @blog.ElementAt(3)
                     </td>
-                    <td>
-                        <a asp-controller="Browse" asp-action="Views" asp-route-id="@Convert.ToInt32(blog.ElementAt(4))"><i class="text-dark fas fa-list-alt" style="font-size:2rem;"></i></a>
-                    </td>
-                </tr>
+                }
+                else
+                {
+                    <td><i class="fas fa-eye-slash" style="font-size:2rem;"></i></td>
+                }
+                <td>
+                    <a asp-controller="Browse" asp-action="Views" asp-route-id="@Convert.ToInt32(blog.ElementAt(4))"><i class="text-dark fas fa-list-alt" style="font-size:2rem;"></i></a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
