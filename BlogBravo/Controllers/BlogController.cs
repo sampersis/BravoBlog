@@ -44,7 +44,8 @@ namespace BlogBravo.Controllers
             ApplicationUser author = await _userManager.GetUserAsync(HttpContext.User);
             var applicationDbContext =  _context.Blogs.Where(b => b.Author == author);            
             return View(await applicationDbContext.ToListAsync());
-        }
+
+        }       
 
         // GET: Blog/Details/5
         public async Task<IActionResult> Details(int? id)
