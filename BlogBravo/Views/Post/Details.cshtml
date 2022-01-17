@@ -1,6 +1,8 @@
 ﻿@model BlogBravo.Models.Post
 @using BlogBravo.Data
+@using Microsoft.AspNetCore.Identity
 @inject ApplicationDbContext _context
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Post View";
@@ -20,8 +22,8 @@
 }
 
 
-<div class="container alert-dark border border-dark rounded py-3">
-    <h6 class="bg-dark text-white" style="width:fit-content;">@blog.Title</h6>
+<div class="container alert-dark border border-dark rounded pt-2 pb-5">
+    <h3 class="bg-dark text-white" style="width:fit-content;">@blog.Title</h3>
     <h1 class="font-italic">@Model.Title</h1>
     <span class="mr-3"><i class="mr-1 fas fa-plus-square">  </i>@Model.Created</span>
     <span class="mr-1"><i class="fas fa-eye"></i></span><span id="post-views"> @Model.Views</span>
@@ -52,70 +54,39 @@
             </div>
         }
     }
+    @if (SignInManager.IsSignedIn(User) && !@User.IsInRole("locked"))
+    {
+        <div id="comment">
+            <form id="comment-form" asp-controller="Post" asp-action="AddComment" asp-route-id="@Model.Id">
+                <input name="post-id" value="@Model.Id" hidden />
+                <input name="blog-id" value="@Model.BlogId" hidden />
+                <input id="post-comment-user" name="post-comment-user" value="@User.Identity.Name" hidden />
 
-    <div id="comment">
-        <form id="comment-form" asp-controller="Post" asp-action="AddComment" asp-route-id="@Model.Id">
-            <input name="post-id" value="@Model.Id" hidden />
-            <input name="blog-id" value="@Model.BlogId" hidden />
-            <input id="post-comment-user" name="post-comment-user" value="@User.Identity.Name" hidden />
-
-            <textarea id="post-comment-body" name="post-comment-body" maxlength="300" class="form-control border-dark font-monospace" rows="3" onkeyup="(function () {document.querySelector('#post-comment-body-count').innerText = 'Count (max. 300): ' + document.querySelector('#post-comment-body').value.length; return false; })(); return false;"></textarea>
-            <span class="alert-dark text-danger float-right" id="post-comment-body-count" style="font-size:0.75rem;">Count (max. 300): 0</span>
-            <div class="form-group mt-4 mb-2">
-                <button type="submit" class="btn btn-sm btn-outline-dark">Add Comment</button>
-                <button class="btn btn-outline-dark float-right" asp-area="" asp-controller="Post" asp-action="Index">Cancel</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-@*<script>
-        window.onload = function () { document.querySelector("#comment-form").reset(); }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            if (document.readyState == "complete" || document.readyState == "interactive") {
-
-                var postCnt;
-
-                if (localStorage.getItem('view') != undefined) {
-                    postCnt = localStorage.getItem('view');
-                    postCnt++;
-                }
-                else {
-                    console.log("Value of count after document load: " + postCnt);
-                    var postCnt = document.querySelector("#post-views").innerText;
-                    console.log("Post Count: " + postCnt);
-                    if (!isNaN(postCnt)) {
-                        postCnt = parseInt(postCnt) + 1;
-                        console.log("Post Count: " + postCnt);
+                <textarea id="post-comment-body" name="post-comment-body" maxlength="300" class="form-control border-dark font-monospace" rows="3" onkeyup="(function () {document.querySelector('#post-comment-body-count').innerText = 'Count (max. 300): ' + document.querySelector('#post-comment-body').value.length; return false; })(); return false;"></textarea>
+                <span class="alert-dark text-danger float-right" id="post-comment-body-count" style="font-size:0.75rem;">Count (max. 300): 0</span>
+                <div class="form-group mt-4 mb-2">
+                    <button type="submit" class="btn btn-sm btn-outline-dark">Add Comment</button>
+                    @if (@User.IsInRole("author") && @User.Identity.Name == @ViewBag.blogAuthor)
+                    {
+                        @if (TempData["search"] == null)
+                        {
+                            <button class="btn btn-outline-dark float-right" asp-area="" asp-controller="Post" asp-action="Index">Cancel</button>
+                        }
+                        else
+                        {
+                            <a href="##" onClick="history.go(-1); return false;" class="btn btn-outline-dark float-right">Return to Search Result</a>
+                        }
                     }
-                }
-
-                localStorage.setItem("view", postCnt);
-                document.querySelector("#post-views").innerText = postCnt;
-            }
-        });
-
-        function addComment() {
-            //reduce the number of visitor. Adding comment cannot be a new visit
-            var postCnt = localStorage.getItem('view');
-            postCnt--;
-            localStorage.setItem("view", postCnt);
-
-            var username = document.querySelector("#post-comment-user").value;
-            const now = new Date();
-            var commentDate = now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate() + " " + now.getHours() + ":"
-                + now.getMinutes() + ":" + now.getSeconds();
-
-
-            var CommentString = "<div class='alert-dark border border-dark rounded mb-2' disabled><p style='font-size:0.6rem;'> [ "
-                + username + " " +
-                 commentDate +
-                " commented ]</p>" +
-                "<p style='font-size:0.8rem;'>" +
-                document.querySelector("#post-comment-body").value +
-                "</p></div>";
-
-            $("#comment").before(CommentString);
-        }
-    </script>*@
+                    else
+                    {
+                        <a href="##" onClick="history.go(-1); return false;" class="btn btn-outline-dark float-right">Return to Search Result</a>
+                    }
+                </div>
+            </form>
+        </div>
+    }
+    else
+    {
+            <a href="##" onClick="history.go(-1); return false;" class="btn btn-outline-dark float-right mb-5">Return to Search Result</a>
+    }
+</div>

@@ -22,19 +22,75 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        string date = item.Created.ToString("yyyy-MM-dd");
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Body)
-            </td>
-            <td>
-                @date
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            string date = item.Created.ToString("yyyy-MM-dd");
+            string postBody = "";
+
+            if (item.Body.Length < 100)
+            {
+                postBody = item.Body.Substring(0, item.Body.Length);
+            }
+            else
+            {
+                postBody = item.Body.Substring(0, 100) + " ...";
+            }
+
+            <tr>
+                <td>
+                    <form name="post-view-form" method="post" asp-area="" asp-controller="Post" asp-action="Details">
+                        <input name="postId" value="@item.Id" hidden />
+                        <button class="btn btn-info" onclick="blog-view-form.submit()">@Html.DisplayFor(modelItem => item.Title)</button>
+                    </form>
+                </td>
+                <td>
+                    @postBody
+                </td>
+                <td>
+                    @date
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@*@model IEnumerable<BlogBravo.Models.Post>
+
+    @{
+        ViewData["Title"] = "View Post";
+    }
+
+    <h1 class="bg-dark text-white mb-3 rounded" style="width:fit-content">@ViewBag.Blog.Title</h1>
+
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Body)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Created)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            string date = item.Created.ToString("yyyy-MM-dd");
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Body)
+                </td>
+                <td>
+                    @date
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>*@

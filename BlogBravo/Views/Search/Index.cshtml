@@ -15,61 +15,10 @@
     <div class="container mt-2" id="load-partial-view"></div>
 </div>
 
+@*------------------------------------------Blog Search View--------------------------------*@
 <div id="blog-view">
     @if (Model.BlogList.Count != 0)
     {
-    <table class="table table-striped" >
-    <thead>
-            <tr>
-                <th>
-                    Title
-                </th>
-                <th>
-                    Body
-                </th>
-                <th>
-                    Created
-                </th>                
-                
-            </tr>
-        </thead>
-    <tbody>
-                @foreach (var item in Model.BlogList)
-                {
-                    <tr>
-                        <td>
-                            <form name="blog-view-form" method="post" asp-controller="Browse" asp-action="Views" asp-route-id ="@item.Id">
-                                <input name="blogId" value="@item.Id" hidden/>
-                                <button class="btn btn-info" onclick="blog-view-form.submit()">@Html.DisplayFor(modelItem => item.Title)</button>
-                            </form>
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Body)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Created)
-                        </td>
-                        @*<td>
-                            @Html.DisplayFor(modelItem => item.Author.UserName)
-                        </td>*@
-
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <h5 class="text-info"> Search Rendered no Matches</h5>
-    }
-
-    <div id="blog-view-page" hidden></div>
-</div>
-
-
-<div id="post-view" hidden>
-    @if (Model.PostList.Count != 0)
-    { 
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -86,19 +35,89 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.PostList)
+                @foreach (var item in Model.BlogList)
                 {
-                    string date = item.Created.ToString("yyyy-MM-dd");
-
                     <tr>
                         <td>
-                            <form name="post-view-form" method="get" asp-controller="Search" asp-action="ViewPost">
-                                <input name="postId" value="@item.Id" hidden />
+                            @*<form name="blog-view-form" method="post" asp-controller="Browse" asp-action="Views" asp-route-id="@item.Id">*@
+                            <form name="blog-view-form" method="get" asp-controller="Search" asp-action="ViewBlog">
+                                <input name="blogId" value="@item.Id" hidden />
+                                <input name="query" value="@ViewBag.Query" hidden />
                                 <button class="btn btn-info" onclick="blog-view-form.submit()">@Html.DisplayFor(modelItem => item.Title)</button>
                             </form>
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Body)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Created)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h5 class="text-info"> Search Rendered no Matches</h5>
+    }
+
+    <div id="blog-view-page" hidden></div>
+</div>
+
+@*------------------------------------------Post Search View--------------------------------*@
+<div id="post-view" hidden>
+    @if (Model.PostList.Count != 0)
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Post Title
+                    </th>
+                    <th>
+                        Blog Title
+                    </th>
+                    <th>
+                        Body
+                    </th>
+                    <th>
+                        Created
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.PostList)
+                {
+                    string date = item.Created.ToString("yyyy-MM-dd");
+                    string postBody = "";
+
+                    if (item.Body.Length < 100)
+                    {
+                        postBody = item.Body.Substring(0, item.Body.Length);
+                    }
+                    else
+                    {
+                        postBody = item.Body.Substring(0, 100) + " ...";
+                    }
+
+                    <tr>
+                        <td>
+                            <form name="post-view-form" method="post" asp-area="" asp-controller="Post" asp-action="Details">
+                                <input name="postId" value="@item.Id" hidden />
+                                <button class="btn btn-info" onclick="blog-view-form.submit()">@Html.DisplayFor(modelItem => item.Title)</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form name="blog-view-form" method="get" asp-controller="Search" asp-action="ViewBlog">
+                                <input name="blogId" value="@item.Blog.Id" hidden />
+                                <input name="query" value="@ViewBag.Query" hidden />
+                                <button class="btn btn-info" onclick="blog-view-form.submit()">@Html.DisplayFor(modelItem => item.Blog.Title)</button>
+                            </form>
+                        </td>
+                        <td>
+                            @postBody
                         </td>
                         <td>
                             @date
@@ -114,7 +133,7 @@
     }
 </div>
 
-
+@*------------------------------------------Tag Search View--------------------------------*@
 <div id="tag-view" hidden>
     @if (Model.TagList.Count != 0)
     {
@@ -124,20 +143,51 @@
                     <th>
                         Name
                     </th>
+                    <th>Post Name</th>
+                    <th>Blog Name</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.TagList)
                 {
-                    <tr>
-                        <td>
-                            <a class ="btn btn-info" href="#">@Html.DisplayFor(modelItem => item.Name)</a>
-                        </td>
-                        @*<td>
-                                @Html.DisplayFor(modelItem => item.Created)
-                            </td>*@
-
-                    </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <table>
+                            @foreach (var post in item.Post)
+                            {
+                                <tr>
+                                    <td>
+                                        
+                                        <form name="post-view-form" method="post" asp-area="" asp-controller="Post" asp-action="Details">
+                                            <input name="postId" value="@post.Id" hidden />
+                                            <button class="btn btn-info" onclick="blog-view-form.submit()">@post.Title</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                    <td>
+                        <table>
+                            @foreach (var post in item.Post)
+                            {
+                                <tr>
+                                    <td>
+                                        
+                                        <form name="blog-view-form" method="get" asp-controller="Search" asp-action="ViewBlog">
+                                            <input name="blogId" value="@post.BlogId" hidden />
+                                            <input name="query" value="@ViewBag.Query" hidden />
+                                            <button class="btn btn-info" onclick="blog-view-form.submit()">@post.Blog.Title</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>
@@ -150,29 +200,29 @@
 
 
 <script>
-        document.querySelector("#blogs-btn").addEventListener('click', function () {
-            $("#blog-view").prop("hidden", false);
-            $("#post-view").prop("hidden", true);
-            $("#tag-view").prop("hidden", true);
-        });
+    document.querySelector("#blogs-btn").addEventListener('click', function () {
+        $("#blog-view").prop("hidden", false);
+        $("#post-view").prop("hidden", true);
+        $("#tag-view").prop("hidden", true);
+    });
 
     document.querySelector("#posts-btn").addEventListener('click', function () {
         $("#blog-view").prop("hidden", true);
         $("#post-view").prop("hidden", false);
         $("#tag-view").prop("hidden", true);
-        });
+    });
 
-        document.querySelector("#tags-btn").addEventListener('click', function () {
-            $("#blog-view").prop("hidden", true);
-            $("#post-view").prop("hidden", true);
-            $("#tag-view").prop("hidden", false);
-        });
+    document.querySelector("#tags-btn").addEventListener('click', function () {
+        $("#blog-view").prop("hidden", true);
+        $("#post-view").prop("hidden", true);
+        $("#tag-view").prop("hidden", false);
+    });
 </script>
 
 
 
 <!--<table class="table">-->
-    @*<thead>
+@*<thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.title)
@@ -189,26 +239,26 @@
             <th></th>
         </tr>
     </thead>*@
-    @*<tbody>
-        @foreach (var item in Model.BlogList)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Body)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Created)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Author.Id)
-                </td>
+@*<tbody>
+            @foreach (var item in Model.BlogList)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Body)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Created)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Author.Id)
+                    </td>
 
-            </tr>
-        }
-    </tbody>
-</table>*@
+                </tr>
+            }
+        </tbody>
+    </table>*@
 
 
