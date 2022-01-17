@@ -70,19 +70,46 @@ namespace BlogBravo.Controllers
             }
         }
         
+        [AllowAnonymous]
         // GET: Post/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                if (!String.IsNullOrEmpty(Request.Form["postId"]))
+                {
+                    id = Convert.ToInt32(Request.Form["postId"]);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
+
+            //if(Request.Path.ToString().Contains("Post"))
+            //{
+            //    ViewBag.Post = true;
+            //}
+            //else
+            //{
+            //    ViewBag.Post = false;
+            //}
+
+            // Keep the calling page. It is necessary to redirect back 
+            //if (String.IsNullOrEmpty(Request.Headers["Referer"]))
+            //{
+            //    ViewData["Reffer"] = Request.Headers["Referer"].ToString();
+            //}
 
             Post post = await _context.Posts.Include(p=>p.Comment).FirstOrDefaultAsync(p=>p.Id == id);
             post = await _context.Posts.Include(p => p.Tag).FirstOrDefaultAsync(p => p.Id == id);
             var comments =  _context.Comments.Include(c => c.Author).Where(c => c.PostId == id);
 
             ViewBag.Comments = comments;
+
+            Blog blog = _context.Blogs.Find(post.BlogId);
+            ApplicationUser author = await _userManager.FindByIdAsync(blog.AuthorId);
+            ViewBag.blogAuthor = author.UserName;
 
             if (post == null)
             {

@@ -11,7 +11,7 @@
 
 <div class="container-fluid col-lg-12 mt-2">
     <div class="row">
-        <!-------------------------------------List of Posts in the blog----------------------->
+        <!-------------------------------------List of Posts in the blog----------------------------------->
         <div id="post-list" class="float-left col-lg-7">
 
             @if (blogPosts != null)
@@ -49,7 +49,7 @@
                     }
                 }
 
-                @if (!@User.IsInRole("locked"))
+                @if (SignInManager.IsSignedIn(User) && !@User.IsInRole("locked"))
                 {
                     <div class="mx-2">
                         <form id="comment-form" asp-controller="Browse" asp-action="AddComment" asp-route-id="@post.Id">
