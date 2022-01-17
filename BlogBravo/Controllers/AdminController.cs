@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using BlogBravo.Data;
 using BlogBravo.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using BlogBravo.Areas.Identity.Pages.Account;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 
 namespace BlogBravo.Controllers 
@@ -161,6 +161,12 @@ namespace BlogBravo.Controllers
                 var role = _roleManager.Roles.FirstOrDefault(r => r.Id == roleId);
                 return View(role);
             }
+
+            if (!String.IsNullOrEmpty(Request.Headers["Referer"]))
+            {
+                ViewData["Reffer"] = Request.Headers["Referer"].ToString();
+            }
+
 
             return NotFound();
         }
