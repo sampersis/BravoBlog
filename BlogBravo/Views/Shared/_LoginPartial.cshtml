@@ -29,7 +29,7 @@
                 </li>
                 <li class="nav-item">
                     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                        <button type="submit" class="nav-link btn btn-link text-dark"><span class="text-white">Logout <i class="fas fa-sign-out-alt"></i></span></button>
+                        <button type="submit" class="nav-link btn btn-link text-dark"><span class="text-white"> <i class="fas fa-sign-out-alt" title="Logout" style="font-size:2rem;"></i></span></button>
                     </form>
                 </li>
             }
@@ -37,11 +37,11 @@
             {
                 <li class="nav-item">
                     <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" hidden>Hello @User.Identity.Name!</a>
-                    <a class="nav-link text-white" asp-area="" asp-controller="Admin" asp-action="Index">@userName Admin Page</a>
+                    <a class="nav-link text-white mt-2" asp-area="" asp-controller="Admin" asp-action="Index">@userName Admin Page</a>
                 </li>
                 <li class="nav-item">
                     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                        <button type="submit" class="nav-link btn btn-link text-dark"><span class="text-white">Logout <i class="fas fa-sign-out-alt"></i></span></button>
+                        <button type="submit" class="nav-link btn btn-link text-dark"><span class="text-white"> <i class="fas fa-sign-out-alt" title="Logout" style="font-size:2rem;"></i></span></button>
                     </form>
                 </li>
             }
@@ -49,7 +49,7 @@
             {
                 <li class="nav-item">
                     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                        <button type="submit" class="nav-link btn btn-link text-dark"><span class="text-white">@user.FirstName @user.LastName Logout <i class="fas fa-sign-out-alt"></i></span></button>
+                        <button type="submit" class="nav-link btn btn-link text-dark"><span class="text-white">@user.FirstName @user.LastName <i class="fas fa-sign-out-alt" title="Logout" style="font-size:2rem;"></i></span></button>
                     </form>
                 </li>
             }
@@ -57,7 +57,7 @@
             {
     <li class="nav-item">
         <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button type="submit" class="nav-link btn btn-link"><span class="text-danger">@user.FirstName @user.LastName <i class="fas fa-lock"></i> </span><span class="text-white">Logout <i class="fas fa-sign-out-alt"></i></span></button>
+            <button type="submit" class="nav-link btn btn-link"><span class="text-danger mr-2" style="font-size:1rem;">@user.FirstName @user.LastName <i class="fas fa-lock"></i> </span><span class="text-white"><i class="fas fa-sign-out-alt" title="Logout" style="font-size:2rem;"></i></span></button>
          </form>
 </li>
             }
@@ -65,10 +65,10 @@
         else
         {
             <li class="nav-item">
-                <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Register">Register <i class="fas fa-user-circle"></i></a>
+                <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Register"><i class="fas fa-address-card" title="Register" style="font-size:2rem;"></i></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Login">Login <i class="fas fa-sign-in-alt"></i></a>
+                <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Login"> <i class="fas fa-sign-in-alt" title="Login" style="font-size:2rem;"></i></a>
             </li>
         }
     </ul>

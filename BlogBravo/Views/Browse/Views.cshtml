@@ -49,7 +49,7 @@
                     }
                 }
 
-                @if (SignInManager.IsSignedIn(User) && !@User.IsInRole("locked"))
+                @if (!@User.IsInRole("locked"))
                 {
                     <div class="mx-2">
                         <form id="comment-form" asp-controller="Browse" asp-action="AddComment" asp-route-id="@post.Id">

@@ -19,6 +19,6 @@
             <input type="text" name="userId" value="@Model.Id" hidden />
             <input type="submit" value="Delete User @Model.FirstName @Model.LastName (@Model.Email)" class="btn btn-danger rounded float-left" asp-controller="Admin" asp-action="DeleteUser" />
         </form>
-        <button class="btn btn-dark rounded float-right" asp-area="" asp-controller="Admin" asp-action="Index">Back to the User List</button>
     </div>
+    <a class="btn btn-dark rounded float-right" asp-area="" asp-controller="Admin" asp-action="Index">Back to the User List</a>
 </div>
