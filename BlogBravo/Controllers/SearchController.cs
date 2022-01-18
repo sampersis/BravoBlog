@@ -30,32 +30,10 @@ namespace BlogBravo.Controllers
             search.BlogList = _context.Blogs.ToList();
             search.PostList = _context.Posts.Include(p=>p.Blog).ToList();
             search.TagList = _context.Tags.Include(t => t.Post).ToList();
-            //searchString.BlogList = (from b in _context.Blogs
-            //                         select b).ToList();
-            //searchString.PostList = (from p in _context.Posts
-            //                         select p).Include(p=> p.Blog).ToList();
-            //searchString.TagList = (from t in _context.Tags
-            //                        select t).Include(t=> t.Post).ToList();
-
-            //foreach (Tag tag in search.TagList)
-            //{
-            //    foreach (Post post in tag.Post)
-            //    {
-            //        post.Blog = _context.Blogs.Find(post.Id);
-            //        Post Post = tag.Post.FirstOrDefault(p=> p.Id == post.Id);
-            //        if(Post != null)
-            //        {
-            //            Post = post;
-            //        }
-            //        else
-            //        {
-            //            return Problem("Controller: Search Action: Index: something went wrong when trying to find Blog of a Post " + post.ToString());
-            //        }
-            //    }
-            //}
 
             ViewBag.Query = query;
-            TempData["search"] = "search";
+            TempData["searchpath"] = "search";
+            TempData["query"] = query;
             if (!String.IsNullOrEmpty(query))
             {
                 search.BlogList = search.BlogList.Where(b => b.Title.ToUpper().Contains(query.ToUpper())).ToList();
@@ -75,8 +53,18 @@ namespace BlogBravo.Controllers
                 Blog blog = _context.Blogs.Find(blogId);
                 ViewBag.Blog = blog;
                 search.PostList = new List<Post>();
-                search.PostList = _context.Posts.Where(p => p.BlogId == blog.Id).OrderByDescending(p => p.Created).ToList();
-                search.PostList = search.PostList.Where(p => p.Title.ToUpper().Contains(query.ToUpper())).ToList();
+
+               Post postWithTheLatestDate = _context.Posts.Where(p => p.BlogId == blog.Id).OrderByDescending(p => p.Created).FirstOrDefault();
+               var PostList = _context.Posts.Where(p => p.BlogId == blog.Id).OrderByDescending(p => p.Created).AsEnumerable().GroupBy(p =>p.Created).Select(g=>g.First());
+
+                foreach (var post in PostList)
+                {
+                    if(post.Created.ToString("MM").Equals(postWithTheLatestDate.Created.ToString("MM")))
+                    { 
+                        search.PostList.Add(post); 
+                    }
+                    
+                }
 
                 return View(search.PostList);
             }
@@ -101,10 +89,6 @@ namespace BlogBravo.Controllers
                                     .ToList();
 
                 search.PostList = search.PostList.Where(p => p.Created.ToString("MM").Equals(post.Created.ToString("MM"))).ToList();
-                foreach(Post p in search.PostList)
-                {
-                    p.Created = Convert.ToDateTime(p.Created.ToString("yyyy-MM-dd"));
-                }
 
                 return View(search.PostList);
             }

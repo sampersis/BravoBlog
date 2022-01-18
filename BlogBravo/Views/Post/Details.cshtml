@@ -68,7 +68,7 @@
                     <button type="submit" class="btn btn-sm btn-outline-dark">Add Comment</button>
                     @if (@User.IsInRole("author") && @User.Identity.Name == @ViewBag.blogAuthor)
                     {
-                        @if (TempData["search"] == null)
+                        @if (TempData["searchpath"] == null)
                         {
                             <button class="btn btn-outline-dark float-right" asp-area="" asp-controller="Post" asp-action="Index">Cancel</button>
                         }
@@ -90,3 +90,4 @@
             <a href="##" onClick="history.go(-1); return false;" class="btn btn-outline-dark float-right mb-5">Return to Search Result</a>
     }
 </div>
+

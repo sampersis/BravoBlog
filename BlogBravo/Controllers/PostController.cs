@@ -86,20 +86,14 @@ namespace BlogBravo.Controllers
                 }
             }
 
-            //if(Request.Path.ToString().Contains("Post"))
-            //{
-            //    ViewBag.Post = true;
-            //}
-            //else
-            //{
-            //    ViewBag.Post = false;
-            //}
-
-            // Keep the calling page. It is necessary to redirect back 
-            //if (String.IsNullOrEmpty(Request.Headers["Referer"]))
-            //{
-            //    ViewData["Reffer"] = Request.Headers["Referer"].ToString();
-            //}
+            if (TempData["searchpath"] != null)
+            {
+                TempData["searchpath"] = "search";
+            }
+            else
+            {
+                TempData["searchpath"] = null;
+            }
 
             Post post = await _context.Posts.Include(p=>p.Comment).FirstOrDefaultAsync(p=>p.Id == id);
             post = await _context.Posts.Include(p => p.Tag).FirstOrDefaultAsync(p => p.Id == id);

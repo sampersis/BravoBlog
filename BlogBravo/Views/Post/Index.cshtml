@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Index";
 
+    TempData["searchpath"] = null;
+
 }
 
 <div class="container alert-dark border border-dark rounded" max-width="100%;">
@@ -39,7 +41,6 @@
             }
             <input type="submit" id="blog-id-submit-btn" value="Create A New Post" class="btn btn-outline-dark text-monospace rounded py-0" asp-controller="Post" asp-action="Create" disabled />
         </form>
-        @*<a value="Blog List" class="btn btn-outline-success text-monospace rounded py-0" asp-controller="Blog" asp-action="Index">Blog List</a>*@
     }
 
     <hr />
