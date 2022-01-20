@@ -1,19 +1,13 @@
+using BlogBravo.Controllers;
 using BlogBravo.Data;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using BlogBravo.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BlogBravo
 {
@@ -41,6 +35,7 @@ namespace BlogBravo
             services.AddControllersWithViews();
 
             services.AddAsyncInitializer<DbInitializer>();
+            services.Configure<RequestSettings>(Configuration.GetSection("HttpRequestSettings"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
