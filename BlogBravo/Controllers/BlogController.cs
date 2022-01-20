@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -12,30 +11,37 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using BlogBravo.Areas.Identity.Pages.Account;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Text;
+using Microsoft.Extensions.Options;
 
 namespace BlogBravo.Controllers
 {
     [Authorize(Roles = "author")]
     public class BlogController : Controller
     {
+        private readonly HttpClient httpClient = new HttpClient();
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private  RequestSettings _requestSettings;
 
         public BlogController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, IOptions<RequestSettings> requestSettings)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _requestSettings = requestSettings.Value;
         }
 
         // GET: Blog
@@ -85,10 +91,8 @@ namespace BlogBravo.Controllers
         }
 
         // POST: Blog/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
         [ValidateAntiForgeryToken]
+        [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Title,Body,Created,AuthorId")] Blog blog)
         {
             ApplicationUser author = await _userManager.GetUserAsync(HttpContext.User);
@@ -99,12 +103,52 @@ namespace BlogBravo.Controllers
                 blog.AuthorId = author.Id;
                 blog.Author = author;
                 _context.Add(blog);
-                await _context.SaveChangesAsync();
+                int saveBlog = await _context.SaveChangesAsync();
+                if (saveBlog > 0)
+                {
+
+                    ConfirmMessage sendMsg = new ConfirmMessage()
+                    {
+                        Email = author.Email,
+                        BlogTitle = blog.Title,
+                        ConfirmText = $"<html><body><h3> Dear {author.FirstName} {author.LastName}"
+                        + $"!</h2><h3> Your Blog <b><u>{blog.Title}</u></b>is created on {blog.Created}.</h3>"
+                        + $"!<h3>Bravo Blog Team</h3></body></html>"
+                    };
+
+                    TempData["EmailStatus"] = await SendConfirmation(sendMsg);
+                }
                 return RedirectToAction(nameof(Index));
             }
 
             ViewData["AuthorId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", blog.AuthorId);
             return View(blog);
+        }
+
+        private async Task<string> SendConfirmation(ConfirmMessage  sendMsg)
+        {
+            string funcUrl = _requestSettings.MyAzureFunctionUrl;
+            //string funcUrl = _requestSettings.MyLocalFunctionUrl;
+            string statusMsg = "";
+
+            using (var myrequest = new HttpRequestMessage(HttpMethod.Post, funcUrl))
+            {
+                var json = JsonConvert.SerializeObject(sendMsg);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                myrequest.Content = httpContent;
+
+                using (var newresponse = await httpClient.SendAsync(myrequest).ConfigureAwait(false))
+                {
+                    if (newresponse.IsSuccessStatusCode)
+                    {
+                        statusMsg = "Your blog has been created. Aconfirmation has been sent by email.";
+                    }
+                    else
+                        statusMsg = "Failed to create your blog!";
+                }
+            }
+
+            return statusMsg;
         }
 
         // GET: Blog/Edit/5
