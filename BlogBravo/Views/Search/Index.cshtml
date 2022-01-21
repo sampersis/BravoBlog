@@ -4,11 +4,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h1 class="bg-dark text-white mb-5" style="width:fit-content;">Search Results: @TempData["query"]</h1>
-
+<div class="row mt-3">
+    <h1 id="search-header" class="bg-dark text-white mb-5" style="width:fit-content;">Search Results for Blogs containing:</h1><h1 class="bg-dark text-white mb-5"> &nbsp;@TempData["query"]</h1>
+</div>
 <div>
     <div class="container btn-group btn-group-lg" role="group">
-        <button id="blogs-btn" type="button" class="btn btn-outline-dark" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Blogs</button>
+        <button id="blogs-btn" type="button" class="btn btn-outline-dark active" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Blogs</button>
         <button id="posts-btn" type="button" class="btn btn-outline-dark" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Posts</button>
         <button id="tags-btn" type="button" class="btn btn-outline-dark" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Tags</button>
     </div>
@@ -202,89 +203,53 @@
 <script>
     document.querySelector("#blogs-btn").addEventListener('click', function () {
         $("#blog-view").prop("hidden", false);
+        $("#blogs-btn").addClass("active");
         $("#post-view").prop("hidden", true);
+        $("#posts-btn").removeClass("active");
         $("#tag-view").prop("hidden", true);
+        $("#tags-btn").removeClass("active");
+        $("#search-header").text("");
+        $("#search-header").text("Search Results for Blogs containing: ");
     });
 
     document.querySelector("#posts-btn").addEventListener('click', function () {
         $("#blog-view").prop("hidden", true);
+        $("#blogs-btn").removeClass("active");
         $("#post-view").prop("hidden", false);
+        $("#posts-btn").addClass("active");
         $("#tag-view").prop("hidden", true);
+        $("#tags-btn").removeClass("active");
+        $("#search-header").text("");
+        $("#search-header").text("Search Results for Posts containing:  ");
     });
 
     document.querySelector("#tags-btn").addEventListener('click', function () {
         $("#blog-view").prop("hidden", true);
+        $("#blogs-btn").removeClass("active");
         $("#post-view").prop("hidden", true);
+        $("#posts-btn").removeClass("active");
         $("#tag-view").prop("hidden", false);
+        $("#tags-btn").addClass("active");
+        $("#search-header").text("");
+        $("#search-header").text("Search Results for Tags containing:  ");
     });
 
     window.onload = function () {
         console.log(document.referrer);
         $("#post-view form").children("input[name='referer']").each(function () {
-            console.info($(this));
-            console.log($(this).val());
             $(this).val(document.referrer);
-            console.log($(this).val());
+            $("#search-header").text("");
+            $("#search-header").text("Search Results for Tags containing: ");
         });
 
         $("#tag-view form").children("input[name='referer']").each(function () {
-            console.info($(this));
-            console.log($(this).val());
             $(this).val(document.referrer);
-            console.log($(this).val());
         });
-
-        //console.info($("#tag-post-view").children("form").attr('id'));
-        //console.log($("#post-view > form").children("input:nth-child(0)").value);
-        //console.log($("#post-view > form").children("input:eq(1)").value);
-        //document.querySelector("post-view > [form]:nth-child(2)").Value = document.referrer;
-        //document.querySelector("[tag-view > [form]:nth-child(2)").Value = document.referrer;
     };
 
 
 </script>
 
-
-
-<!--<table class="table">-->
-@*<thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Body)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th></th>
-        </tr>
-    </thead>*@
-@*<tbody>
-            @foreach (var item in Model.BlogList)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Body)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Created)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Author.Id)
-                    </td>
-
-                </tr>
-            }
-        </tbody>
-    </table>*@
 
 
 

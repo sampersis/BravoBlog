@@ -48,7 +48,7 @@ namespace BlogBravo.Controllers
 
             if (blogId == null)
             {
-                ViewBag.UserName = author.FirstName+"'s";
+                ViewBag.UserName = author.FirstName+ " " + author.LastName + "'s";
                 var userBlogs = _context.Blogs.Where(b => b.Author == author);
                 ViewBag.UserBlogs = userBlogs;
 

@@ -33,17 +33,17 @@
     @inject UserManager<ApplicationUser> UserManager
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow py-0">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-family:'Edwardian Script ITC'; font-size:3rem;">Blog Bravo <i class="fas fa-edit"style="font-size:2rem;"></i></a>
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-family:'Edwardian Script ITC'; font-size:3rem;">Blog Bravo <i title="Blog Bravo Home" class="fas fa-home"style="font-size:2rem;"></i></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item  mr-3">
+                        @*<li class="nav-item  mr-3">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index"><i class="fas fa-home" data-toggle="tooltip" data-placement="bottom" title="Blog Bravo Home" style="font-size:2rem;"></i></a>
-                        </li>
+                        </li>*@
                         <li class="nav-item">
                             <a class="nav-link text-white mr-2" asp-area="" asp-controller="Browse" asp-action="Index"><i class="fab fa-blogger mr-5" data-toggle="tooltip" data-placement="bottom" title="Blog Bravo Browse" style="font-size:2rem;"></i></a>
                         </li>
