@@ -1,6 +1,6 @@
 <div>
-    <div class="container btn-group btn-group-lg" role="group">
-        <button id="blogs-btn" type="button" class="btn btn-outline-dark" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Blogs</button>
+    <div class="container btn-group btn-group-lg mt-2" role="group">
+        <button id="blogs-btn" type="button" class="btn btn-outline-dark active" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Blogs</button>
         <button id="posts-btn" type="button" class="btn btn-outline-dark" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Posts</button>
         <button id="tags-btn" type="button" class="btn btn-outline-dark" style="border:solid black; border-radius:0px; border-top-right-radius:20px;">Tags</button>
     </div>
@@ -21,6 +21,24 @@
 
         document.querySelector("#tags-btn").addEventListener('click', function () {
             $("#load-partial-view").load("/Browse/ViewTags");
+        });
+
+        document.querySelector("#blogs-btn").addEventListener('click', function () {
+            $("#blogs-btn").addClass("active");
+            $("#posts-btn").removeClass("active");
+            $("#tags-btn").removeClass("active");
+        });
+
+        document.querySelector("#posts-btn").addEventListener('click', function () {
+            $("#blogs-btn").removeClass("active");
+            $("#posts-btn").addClass("active");
+            $("#tags-btn").removeClass("active");
+        });
+
+        document.querySelector("#tags-btn").addEventListener('click', function () {
+            $("#blogs-btn").removeClass("active");
+            $("#posts-btn").removeClass("active");
+            $("#tags-btn").addClass("active");
         });
     </script>
 

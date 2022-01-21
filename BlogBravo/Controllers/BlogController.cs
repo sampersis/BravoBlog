@@ -111,9 +111,10 @@ namespace BlogBravo.Controllers
                     {
                         Email = author.Email,
                         BlogTitle = blog.Title,
-                        ConfirmText = $"<html><body><h3> Dear {author.FirstName} {author.LastName}"
-                        + $"!</h2><h3> Your Blog <b><u>{blog.Title}</u></b>is created on {blog.Created}.</h3>"
-                        + $"!<h3>Bravo Blog Team</h3></body></html>"
+                        ConfirmText = $"<html><body><h3> Dear {author.FirstName} {author.LastName},"
+                        + $"</h2><h3> Your Blog <b><u>{blog.Title}</u></b> was created on {blog.Created}.</h3>"
+                        + $"</h2><h3>Kind Regards,</h3>"
+                        + $"<h3>Bravo Blog Team</h3></body></html>"
                     };
 
                     TempData["EmailStatus"] = await SendConfirmation(sendMsg);
