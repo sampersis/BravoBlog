@@ -55,11 +55,11 @@
             }
             else if (@User.IsInRole("locked"))
             {
-    <li class="nav-item">
-        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button type="submit" class="nav-link btn btn-link"><span class="text-danger mr-2" style="font-size:1rem;">@user.FirstName @user.LastName <i class="fas fa-lock"></i> </span><span class="text-white"><i class="fas fa-sign-out-alt" title="Logout" style="font-size:2rem;"></i></span></button>
-         </form>
-</li>
+                <li class="nav-item">
+                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button type="submit" class="nav-link btn btn-link"><span class="text-danger mr-2" style="font-size:2rem;">@user.FirstName @user.LastName <i class="fas fa-lock" ></i> </span><span class="text-white"><i class="fas fa-sign-out-alt" title="Logout" style="font-size:2rem;"></i></span></button>
+                     </form>
+                </li>
             }
         }
         else

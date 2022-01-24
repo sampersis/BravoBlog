@@ -163,7 +163,7 @@
                                     <td>
                                         <form name="tag-post-view-form" method="post" asp-area="" asp-controller="Post" asp-action="Details">
                                             <input name="postId" value="@post.Id" hidden />
-                                            <input id="" name="referer" value="@post.Id" hidden />
+                                            <input name="referer" value="@post.Id" hidden />
                                             <button class="btn btn-info" onclick="blog-view-form.submit()">@post.Title</button>
                                         </form>
                                     </td>
@@ -231,19 +231,20 @@
         $("#tag-view").prop("hidden", false);
         $("#tags-btn").addClass("active");
         $("#search-header").text("");
-        $("#search-header").text("Search Results for Tags containing:  ");
+        $("#search-header").text("Search Results for Posts containing Tag:  ");
     });
 
     window.onload = function () {
-        console.log(document.referrer);
         $("#post-view form").children("input[name='referer']").each(function () {
             $(this).val(document.referrer);
             $("#search-header").text("");
-            $("#search-header").text("Search Results for Tags containing: ");
+            $("#search-header").text("Search Results for Blogs containing: ");
         });
 
         $("#tag-view form").children("input[name='referer']").each(function () {
             $(this).val(document.referrer);
+            sessionStorage.setItem('returnPath', window.location.href);
+            console.log(sessionStorage.getItem('returnPath'));
         });
     };
 

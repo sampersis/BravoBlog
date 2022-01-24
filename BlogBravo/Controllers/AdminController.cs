@@ -417,10 +417,6 @@ namespace BlogBravo.Controllers
                                 return Problem($"Could not remove role {userCurrentRole.ElementAt(0)} from user {user.UserName}");
                             }
                         }
-                        else
-                        {
-                            return Problem($" {user.UserName} has already role {Request.Form["user-role"]}");
-                        }
                     }
                     else
                     {
