@@ -26,32 +26,29 @@
     <link rel="stylesheet" href="~/css/blogbravo.css" />
 </head>
 <body>
-    <partial name="_Spinner"/>
+    <partial name="_Spinner" />
     @using Microsoft.AspNetCore.Identity
     @using BlogBravo.Data
     @inject SignInManager<ApplicationUser> SignInManager
     @inject UserManager<ApplicationUser> UserManager
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow py-0">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-family:'Edwardian Script ITC'; font-size:3rem;">Blog Bravo <i title="Blog Bravo Home" class="fas fa-home"style="font-size:2rem;"></i></a>
+            <div id ="nav-div" class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-family: 'Edwardian Script ITC'; font-size: 3rem;">Blog Bravo&ensp;<i title="Blog Bravo Home" class="fas fa-home mr-5" style="font-size:2rem;"></i></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @*<li class="nav-item  mr-3">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index"><i class="fas fa-home" data-toggle="tooltip" data-placement="bottom" title="Blog Bravo Home" style="font-size:2rem;"></i></a>
-                        </li>*@
                         <li class="nav-item">
                             <a class="nav-link text-white mr-2" asp-area="" asp-controller="Browse" asp-action="Index"><i class="fab fa-blogger mr-5" data-toggle="tooltip" data-placement="bottom" title="Blog Bravo Browse" style="font-size:2rem;"></i></a>
                         </li>
                         <li>
-                            <form method ="get" name ="Searchform" class="form-inline" asp-controller="Search" asp-action="Index">
+                            <form method="get" name="Searchform" class="form-inline" asp-controller="Search" asp-action="Index">
                                 <div class="input-group">
                                     <input type="search" placeholder="Search..." name="query" class="form-control border border-right-0 border-dark" style="border-top-left-radius:25px; border-bottom-left-radius:25px;">
-                                                                      
+
                                     <div class="input-group-append">
                                         <span class="btn btn-outline-dark border-left-0 bg-white" style="border-top-right-radius: 25px; border-bottom-right-radius: 25px;"><i class="text-black fas fa-search" onclick="Searchform.submit()"></i></span>
                                     </div>
@@ -78,6 +75,41 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+
+        function SetNavBarClass() {
+            // Get width and height of the window excluding scrollbars
+            var width = document.documentElement.clientWidth;
+            var height = document.documentElement.clientHeight;
+
+            if (width >= 1400) { //xxl Screen
+                $(".navbar *").css("font-size", 32);
+                console.log("The Screen is XXL and the font size is 48 ");
+            }
+            else if (width >= 1200 && width < 1400) { // XL Screen
+                $(".navbar *").css("font-size", 32);
+                console.log("The Screen is XL and the font size is 40 ");
+            }
+            else if (width >= 992 && width < 1200) { // Large Screen
+                $(".navbar *").css("font-size", 20);
+                console.log("The Screen is L and the font size is 32 ");
+            }
+            else if (width >= 768 && width < 992) { // Medium Screen
+                $(".navbar *").css("font-size", 16);
+                console.log("The Screen is MD and the font size is 24 ");
+            }
+            else if (width >= 576 && width < 768) { // small screen
+                $(".navbar *").css("font-size", 13);
+                console.log("The Screen is SM and the font size is 16 ");
+            }
+            else if (width < 576) { // X Small Screen
+                $(".navbar *").css("font-size", 10);
+                console.log("The Screen is XS and the font size is 10 ");
+            }
+        }
+        window.addEventListener("resize", SetNavBarClass);
+        SetNavBarClass();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

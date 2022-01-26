@@ -45,8 +45,6 @@
 
     }
 
-    //blogList = blogList.OrderByDescending(b => b.ElementAt(0)).ToList();
-
     blogList = blogList.OrderByDescending(b => Convert.ToInt32(b.ElementAt(0))).ToList();
 
 

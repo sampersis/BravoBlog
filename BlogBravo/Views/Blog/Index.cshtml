@@ -12,9 +12,6 @@
     int totalNumOfPosts = 0;
     var user = await UserManager.GetUserAsync(Context.User);
     string userName = user.FirstName + " " + user.LastName + "'s";
-    //string[] userinfo = @User.Identity.Name.Split('@');
-    //string user = userinfo[0];
-    //user = char.ToUpper(user[0]) + user.Substring(1) + "'s";
 
     var blogs = _context.Blogs.Where(b => b.Author.UserName == @User.Identity.Name);
 

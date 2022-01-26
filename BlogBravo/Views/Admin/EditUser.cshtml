@@ -57,14 +57,12 @@
 
 <script>
     let role = document.querySelector("#user-role").value;
-    console.log("Role Start: " + role);
 
     document.querySelector("#user-lock").addEventListener('change', function () {
         if ($("#user-lock").is(":checked")) {
             $("#user-role").val("locked");
         }
         else {
-            console.log("Role End: " + role);
             $("#user-role").val(role);
         }
     });

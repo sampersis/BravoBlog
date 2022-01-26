@@ -158,14 +158,9 @@ namespace BlogBravo.Controllers
             string[] pathComponent = path.Split('/');
 
             ViewBag.CreateBlogId = pathComponent[pathComponent.Length-1];
-            // ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body"); // This creates a list of BlogIds which is not required
             return View();
         }
 
-        // POST: Post/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost, ActionName("Create")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePost(Post post)
@@ -219,15 +214,13 @@ namespace BlogBravo.Controllers
                     }
                 }
                 post.Created = DateTime.Now; // Post creation date
-                //tagAlreadyExist = false;
 
                 _context.Posts.Add(post);
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            // ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body", post.BlogId);
-            // return View(post);
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -244,13 +237,10 @@ namespace BlogBravo.Controllers
             {
                 return NotFound();
             }
-            //ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Body", post.BlogId);
+
             return View(post);
         }
 
-        // POST: Post/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Body,Created,Views,Tag,BlogId")] Post post)

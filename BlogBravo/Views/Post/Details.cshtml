@@ -75,6 +75,7 @@
                         else
                         {
                             <a id="return-path-one"href="" class="btn btn-outline-dark float-right">Return to Search Result</a>
+                            TempData["searchpath"] = "search";
                         }
                     }
                     else
@@ -87,7 +88,6 @@
     }
     else
     {
-        @*<a href="##" onClick="history.go(-1); return false;" class="btn btn-outline-dark float-right mb-5">Return to Search Result</a>*@
         <a id="return-path-three" href=""  class="btn btn-outline-dark float-right mb-5">Return to Search Result</a>
     }
 </div>
