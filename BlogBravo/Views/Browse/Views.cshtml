@@ -102,13 +102,8 @@
 
 <script>
         window.onload = function () {
-            //console.log("Window load Session id: " + sessionStorage.getItem('id'));
-            //console.log("Window load Session session: " + sessionStorage.getItem('selection'));
             var path = window.location.pathname;
             var oldPath = sessionStorage.getItem("path");
-
-            //console.log("Path: " + path);
-            //console.log("oldPath: " + oldPath);
 
             if (path != oldPath) {
                 sessionStorage.setItem("selection", 0);
@@ -123,7 +118,6 @@
         sessionStorage.setItem("selection", selection);
         sessionStorage.setItem("id", id);
         sessionStorage.setItem("path", window.location.pathname);
-        console.log("Path",sessionStorage.getItem("path"));
         var monthSelected = parseInt(selection); 
 
 
@@ -162,7 +156,6 @@
     // Comment Counter
     function CommentCounter(textarea) {
         var length = $(textarea).val().length;
-        // console.log("Value:" + $(textarea).val() + "Count: " + length);
         $(textarea).next().text('Count (max. 300): ' + length);
     }
 </script>

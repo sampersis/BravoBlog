@@ -107,20 +107,16 @@
         function Selection(selection) {
 
             if (selection != 0) {
-                //console.log(selection);
                 $("#blog-id-submit-btn").prop('disabled', false);
-                var blogId = $("#list-of-blogs option:selected").val(); // console.log(blogId);
+                var blogId = $("#list-of-blogs option:selected").val();
                 $("#blog-id").val(blogId);
-                //console.log("blog-id value is " + $("#blog-id").val());
 
                 //get the block id and create the path for creating a post in that blog
                 var formaction = "/Post/Create/" + blogId;
-                console.log("Form Action: " + formaction);
                 $("#blog-id-submit-btn").attr('formaction', formaction);
 
                 // Just show the the post for the current selected blog
                 $('#blog-posts-list > tbody').children('tr').each(function () {
-
                     var rowId = $(this).attr('id');
 
                     if (rowId.length > 0) {
@@ -134,11 +130,9 @@
                 });
             }
             else { // List all the posts
-                // console.log(selection);
                 $("#blog-id-submit-btn").prop('disabled', true);
 
                 $('#blog-posts-list > tbody').children('tr').each(function () {
-
                     var rowId = $(this).attr('id');
 
                     if (rowId.length > 0) {

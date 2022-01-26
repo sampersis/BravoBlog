@@ -81,7 +81,6 @@ namespace BlogBravo.Controllers
             {
                 // Get the Current User Id and send it to page for display
                 ViewBag.AuthorId = _userManager.GetUserId(HttpContext.User);
-                //ViewData["AuthorId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id");
                 return View();
             }
             else
@@ -96,7 +95,6 @@ namespace BlogBravo.Controllers
         public async Task<IActionResult> Create([Bind("Id,Title,Body,Created,AuthorId")] Blog blog)
         {
             ApplicationUser author = await _userManager.GetUserAsync(HttpContext.User);
-            // author.Email = _userManager.GetUserName(HttpContext.User);
             if (ModelState.IsValid)
             {
                 blog.Created = DateTime.Now;
@@ -166,14 +164,9 @@ namespace BlogBravo.Controllers
                 return NotFound();
             }
 
-            //ViewBag.AuthorId = _userManager.GetUserId(HttpContext.User);
-            //ViewData["AuthorId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", blog.AuthorId);
             return View(blog);
         }
 
-        // POST: Blog/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Body,Created,AuthorId")] Blog blog)
