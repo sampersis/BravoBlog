@@ -39,9 +39,14 @@ namespace BlogBravo.Controllers
                 search.BlogList = search.BlogList.Where(b => b.Title.ToUpper().Contains(query.ToUpper())).ToList();
                 search.PostList = search.PostList.Where(p => p.Title.ToUpper().Contains(query.ToUpper())).ToList();
                 search.TagList = search.TagList.Where(t => t.Name.ToUpper().Contains(query.ToUpper())).ToList();
+                return View(search);
+            }
+            else
+            { 
+                return Problem("The query string was empty!"); 
             }
 
-            return View(search);
+
         }
 
         public ActionResult ViewBlog(int? blogId, string query)
