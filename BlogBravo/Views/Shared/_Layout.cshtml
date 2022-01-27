@@ -47,10 +47,10 @@
                         <li>
                             <form method="get" name="Searchform" class="form-inline" asp-controller="Search" asp-action="Index">
                                 <div class="input-group">
-                                    <input type="search" placeholder="Search..." name="query" class="form-control border border-right-0 border-dark" style="border-top-left-radius:25px; border-bottom-left-radius:25px;">
+                                    <input id="search" type="search" placeholder="Search..." name="query" class="form-control border border-right-0 border-dark" style="border-top-left-radius:25px; border-bottom-left-radius:25px;">
 
                                     <div class="input-group-append">
-                                        <span class="btn btn-outline-dark border-left-0 bg-white" style="border-top-right-radius: 25px; border-bottom-right-radius: 25px;"><i class="text-black fas fa-search" onclick="Searchform.submit()"></i></span>
+                                        <span id="seach-btn" class="btn btn-outline-dark border-left-0 bg-white" style="border-top-right-radius: 25px; border-bottom-right-radius: 25px;"><i class="text-black fas fa-search" onclick="Searchform.submit()"></i></span>
                                     </div>
                                 </div>
                             </form>
@@ -84,12 +84,18 @@
 
             if (width >= 1400) { //xxl Screen
                 $(".navbar *").css("font-size", 24);
+                $("#search").css("font-size", 16);
+                $("#search-btn").css("font-size", 16);
             }
             else if (width >= 1200 && width < 1400) { // XL Screen
                 $(".navbar *").css("font-size", 24);
+                 $("#search").css("font-size", 16);
+                $("#search-btn").css("font-size", 16);
             }
             else if (width >= 992 && width < 1200) { // Large Screen
                 $(".navbar *").css("font-size", 20);
+                $("#search").css("font-size", 16);
+                $("#search-btn").css("font-size", 16);
             }
             else if (width >= 768 && width < 992) { // Medium Screen
                 $(".navbar *").css("font-size", 16);
