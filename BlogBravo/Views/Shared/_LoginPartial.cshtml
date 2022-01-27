@@ -10,7 +10,7 @@
         @if (SignInManager.IsSignedIn(User))
         {
             var user = await UserManager.GetUserAsync(Context.User);
-            string userName = user.FirstName + " " + user.LastName + "'s";
+            string userName = user.FirstName + "'s";
 
             if (@User.IsInRole("author"))
             {
