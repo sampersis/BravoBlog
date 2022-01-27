@@ -46,11 +46,11 @@
                         </li>
                         <li>
                             <form method="get" name="Searchform" class="form-inline" asp-controller="Search" asp-action="Index">
-                                <div class="input-group">
+                                <div class="input-group mt-1">
                                     <input id="search" type="search" placeholder="Search..." name="query" class="form-control border border-right-0 border-dark" style="border-top-left-radius:25px; border-bottom-left-radius:25px;">
 
                                     <div class="input-group-append">
-                                        <span class="btn btn-outline-dark border-left-0 bg-white" style="border-top-right-radius: 25px; border-bottom-right-radius: 25px;"><i id="seach-btn" class="text-black fas fa-search" onclick="Searchform.submit()"></i></span>
+                                        <span id="search-btn" class="btn btn-outline-dark border-left-0 bg-white" style="border-top-right-radius: 25px; border-bottom-right-radius: 25px;"><i class="text-black fas fa-search" onclick="Searchform.submit()"></i></span>
                                     </div>
                                 </div>
                             </form>
