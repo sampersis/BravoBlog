@@ -83,28 +83,22 @@
             var height = document.documentElement.clientHeight;
 
             if (width >= 1400) { //xxl Screen
-                $(".navbar *").css("font-size", 32);
-                console.log("The Screen is XXL and the font size is 48 ");
+                $(".navbar *").css("font-size", 24);
             }
             else if (width >= 1200 && width < 1400) { // XL Screen
-                $(".navbar *").css("font-size", 32);
-                console.log("The Screen is XL and the font size is 40 ");
+                $(".navbar *").css("font-size", 24);
             }
             else if (width >= 992 && width < 1200) { // Large Screen
                 $(".navbar *").css("font-size", 20);
-                console.log("The Screen is L and the font size is 32 ");
             }
             else if (width >= 768 && width < 992) { // Medium Screen
                 $(".navbar *").css("font-size", 16);
-                console.log("The Screen is MD and the font size is 24 ");
             }
             else if (width >= 576 && width < 768) { // small screen
                 $(".navbar *").css("font-size", 13);
-                console.log("The Screen is SM and the font size is 16 ");
             }
             else if (width < 576) { // X Small Screen
                 $(".navbar *").css("font-size", 10);
-                console.log("The Screen is XS and the font size is 10 ");
             }
         }
         window.addEventListener("resize", SetNavBarClass);
