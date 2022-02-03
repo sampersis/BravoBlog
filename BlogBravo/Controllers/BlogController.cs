@@ -9,6 +9,7 @@ using BlogBravo.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using BlogBravo.Areas.Identity.Pages.Account;
 using System.Net.Http;
@@ -51,25 +52,34 @@ namespace BlogBravo.Controllers
             var applicationDbContext =  _context.Blogs.Where(b => b.Author == author);            
             return View(await applicationDbContext.ToListAsync());
 
-        }       
+        }
 
         // GET: Blog/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest(StatusCodes.Status406NotAcceptable);
             }
 
-            var blog = await _context.Blogs
-                .Include(b => b.Author)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (blog == null)
+            var blog = await _context.Blogs.Include(b => b.Author)
+            .FirstOrDefaultAsync(m => m.Id == id);
+            if (await UserAccessAuthorization(blog.AuthorId))
             {
-                return NotFound();
+
+                if (blog == null)
+                {
+                    return NotFound();
+                }
+
+                return View(blog);
+            }
+            else
+            {
+                string ticketId = Guid.NewGuid().ToString();
+                return Unauthorized($"Access Denied! A security Incident Ticket {ticketId} created!");
             }
 
-            return View(blog);
         }
 
         // GET: Blog/Create
@@ -85,7 +95,7 @@ namespace BlogBravo.Controllers
             }
             else
             {
-                return NotFound();
+                return NotFound($"Cannot find user {userName.ToString()}");
             }
         }
 
@@ -94,13 +104,11 @@ namespace BlogBravo.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Title,Body,Created,AuthorId")] Blog blog)
         {
-            ApplicationUser author = await _userManager.GetUserAsync(HttpContext.User);
+            ApplicationUser author = await _userManager.FindByIdAsync(blog.AuthorId);
             if (ModelState.IsValid)
             {
                 blog.Created = DateTime.Now;
-                blog.AuthorId = author.Id;
-                blog.Author = author;
-                _context.Add(blog);
+                await _context.AddAsync(blog);
                 int saveBlog = await _context.SaveChangesAsync();
                 if (saveBlog > 0)
                 {
@@ -140,7 +148,7 @@ namespace BlogBravo.Controllers
                 {
                     if (newresponse.IsSuccessStatusCode)
                     {
-                        statusMsg = "Your blog has been created. Aconfirmation has been sent by email.";
+                        statusMsg = "Your blog has been created. A confirmation has been sent by email.";
                     }
                     else
                         statusMsg = "Failed to create your blog!";
@@ -155,51 +163,71 @@ namespace BlogBravo.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return Conflict("The blog id was null! Cannot proceed.");
             }
 
             var blog = await _context.Blogs.FindAsync(id);
-            if (blog == null)
+            if (await UserAccessAuthorization(blog.AuthorId))
             {
-                return NotFound();
-            }
 
-            return View(blog);
+                if (blog == null)
+                {
+                    return NotFound();
+                }
+
+                return View(blog);
+            }
+            else
+            { 
+                string ticketId = Guid.NewGuid().ToString();
+                return Unauthorized($"Access Denied! A security Incident Ticket {ticketId} created!");
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Body,Created,AuthorId")] Blog blog)
+        public async Task<IActionResult> Edit(int id, Blog blog)
         {
-            ApplicationUser author = await _userManager.GetUserAsync(HttpContext.User);
-
             if (id != blog.Id)
             {
-                return NotFound();
+                return BadRequest("Blog id is null!");
+            }
+            else
+            {
+                blog.Author = _context.Blogs.Find(id).Author;
+                blog.AuthorId = _context.Blogs.Find(id).AuthorId;
             }
 
-            if (ModelState.IsValid)
+            if (await UserAccessAuthorization(blog.AuthorId))
             {
-                try
-                {
-                    blog.AuthorId = author.Id;
-                    blog.Author = author;
-                    _context.Update(blog);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BlogExists(blog.Id))
+                if (ModelState.IsValid)
+                { 
+                    try
                     {
-                        return NotFound();
+                        _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+                        _context.Update(blog);
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!BlogExists(blog.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
             }
+            else
+            {
+                string ticketId = Guid.NewGuid().ToString();
+                return Unauthorized($"Access Denied! A security Incident Ticket {ticketId} created!");
+            }
+
             ViewData["AuthorId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", blog.AuthorId);
             return View(blog);
         }
@@ -209,18 +237,25 @@ namespace BlogBravo.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest("Blog id is null!");
             }
+            var blog = await _context.Blogs.Include(b => b.Author)
+                        .FirstOrDefaultAsync(m => m.Id == id);
 
-            var blog = await _context.Blogs
-                .Include(b => b.Author)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (blog == null)
+            if (await UserAccessAuthorization(blog.AuthorId))
             {
-                return NotFound();
-            }
+                if (blog == null)
+                {
+                    return NotFound();
+                }
 
-            return View(blog);
+                return View(blog);
+            }
+            else
+            {
+                string ticketId = Guid.NewGuid().ToString();
+                return Unauthorized($"Access Denied! A security Incident Ticket {ticketId} created!");
+            }
         }
 
         // POST: Blog/Delete/5
@@ -228,15 +263,33 @@ namespace BlogBravo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
             var blog = await _context.Blogs.FindAsync(id);
-            _context.Blogs.Remove(blog);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (await UserAccessAuthorization(blog.AuthorId))
+            {
+                _context.Blogs.Remove(blog);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                string ticketId = Guid.NewGuid().ToString();
+                return Unauthorized($"Access Denied! A security Incident Ticket {ticketId} created!");
+            }
         }
 
         private bool BlogExists(int id)
         {
             return _context.Blogs.Any(e => e.Id == id);
+        }
+
+        private async Task<bool> UserAccessAuthorization(string authorId)
+        {
+            ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user.Id == authorId)
+            { return true; }
+            else
+            { return false; }  
         }
     }
 }

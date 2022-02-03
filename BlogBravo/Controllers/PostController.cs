@@ -114,6 +114,7 @@ namespace BlogBravo.Controllers
         }
 
         [HttpPost]
+        [NonAction]
         public async Task<IActionResult> AddComment(int? id)
         {
             if (id == null)
